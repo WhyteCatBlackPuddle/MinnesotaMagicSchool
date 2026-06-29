@@ -3,329 +3,995 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Magic School — Student Registry</title>
+<title>Boundary Waters Academy | Student Registry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Georgia', serif;
-    background: #1a1a2e;
-    color: #e0d6c2;
-    min-height: 100vh;
-    padding: 2rem;
-  }
-  header {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-  header h1 {
-    font-size: 2.5rem;
-    color: #d4a853;
-    letter-spacing: 2px;
-  }
-  header p {
-    color: #8b7d6b;
-    font-style: italic;
-    margin-top: 0.25rem;
+  :root {
+    --paper: #fffaf0;
+    --paper-soft: #f6f0e4;
+    --ink: #25211b;
+    --muted: #6d6458;
+    --faint: #9a9081;
+    --line: rgba(75, 61, 42, 0.16);
+    --lake: #1f6f78;
+    --lake-dark: #0f4f59;
+    --pine: #244833;
+    --gold: #c18b32;
+    --gold-soft: #fff0c2;
+    --berry: #8d3a45;
+    --white: #ffffff;
+    --shadow: 0 18px 48px rgba(58, 43, 25, 0.11), 0 4px 14px rgba(58, 43, 25, 0.08);
+    --soft-shadow: 0 8px 28px rgba(58, 43, 25, 0.08);
+    --radius-lg: 24px;
+    --radius-md: 16px;
+    --radius-sm: 10px;
   }
 
-  .layout {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-    max-width: 1400px;
+  *, *::before, *::after { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(circle at top left, rgba(31, 111, 120, 0.16), transparent 32rem),
+      radial-gradient(circle at 80% 10%, rgba(193, 139, 50, 0.18), transparent 28rem),
+      linear-gradient(180deg, #fffaf0 0%, #f5ead8 46%, #efe3cf 100%);
+  }
+
+  button, input, select, textarea { font: inherit; }
+  button { border: 0; }
+
+  .page-shell {
+    width: min(1500px, calc(100% - 40px));
     margin: 0 auto;
+    padding: 28px 0 40px;
+  }
+
+  .hero {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 24px;
+    align-items: end;
+    padding: 34px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background:
+      linear-gradient(135deg, rgba(255, 250, 240, 0.95), rgba(255, 255, 255, 0.74)),
+      linear-gradient(120deg, rgba(31, 111, 120, 0.1), rgba(193, 139, 50, 0.14));
+    box-shadow: var(--shadow);
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    width: 360px;
+    height: 360px;
+    right: -140px;
+    top: -160px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(31, 111, 120, 0.22), rgba(31, 111, 120, 0));
+    pointer-events: none;
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+    margin-bottom: 14px;
+    padding: 7px 11px;
+    border: 1px solid rgba(31, 111, 120, 0.22);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.72);
+    color: var(--lake-dark);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 0;
+    max-width: 780px;
+    font-size: clamp(2.45rem, 6vw, 5.6rem);
+    line-height: 0.94;
+    letter-spacing: -0.07em;
+  }
+
+  .hero-copy {
+    max-width: 720px;
+    margin: 16px 0 0;
+    color: var(--muted);
+    font-size: clamp(1rem, 1.4vw, 1.18rem);
+    font-weight: 500;
+    line-height: 1.55;
+  }
+
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(104px, 1fr));
+    gap: 12px;
+    min-width: min(420px, 100%);
+    position: relative;
+    z-index: 1;
+  }
+
+  .metric {
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.76);
+    box-shadow: var(--soft-shadow);
+  }
+
+  .metric strong {
+    display: block;
+    color: var(--lake-dark);
+    font-size: 2rem;
+    line-height: 1;
+    letter-spacing: -0.05em;
+  }
+
+  .metric span {
+    display: block;
+    margin-top: 5px;
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .toolbar {
+    display: grid;
+    grid-template-columns: minmax(220px, 1fr) minmax(150px, 190px) minmax(150px, 190px) auto auto;
+    gap: 12px;
+    align-items: center;
+    margin: 20px 0;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--soft-shadow);
+  }
+
+  .field-control {
+    width: 100%;
+    min-height: 44px;
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    background: rgba(255, 255, 255, 0.86);
+    color: var(--ink);
+    padding: 0 13px;
+    outline: none;
+  }
+
+  .field-control:focus, textarea:focus, input:focus, select:focus {
+    border-color: rgba(31, 111, 120, 0.65);
+    box-shadow: 0 0 0 4px rgba(31, 111, 120, 0.14);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 16px;
+    border-radius: 13px;
+    background: var(--lake);
+    color: var(--white);
+    cursor: pointer;
+    font-weight: 800;
+    box-shadow: 0 12px 22px rgba(31, 111, 120, 0.2);
+    transition: transform 0.16s ease, background 0.16s ease, box-shadow 0.16s ease;
+  }
+
+  .btn:hover { background: var(--lake-dark); transform: translateY(-1px); }
+  .btn:active { transform: translateY(0); box-shadow: none; }
+
+  .btn-secondary {
+    background: rgba(255, 255, 255, 0.86);
+    color: var(--lake-dark);
+    border: 1px solid rgba(31, 111, 120, 0.22);
+    box-shadow: none;
+  }
+
+  .btn-secondary:hover { background: #eaf5f1; }
+
+  .app-layout {
+    display: grid;
+    grid-template-columns: minmax(360px, 470px) minmax(0, 1fr);
+    gap: 20px;
     align-items: start;
   }
 
-  /* ── Student List ── */
   .panel {
-    background: #16213e;
-    border: 1px solid #2a3a5c;
-    border-radius: 12px;
-    padding: 1.5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.76);
+    box-shadow: var(--shadow);
   }
-  .panel h2 {
-    color: #d4a853;
-    font-size: 1.3rem;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid #2a3a5c;
-    padding-bottom: 0.5rem;
+
+  .roster-panel {
+    position: sticky;
+    top: 18px;
+    overflow: hidden;
   }
-  .student-card {
-    background: #0f3460;
-    border: 1px solid #1a4a7a;
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 0.75rem;
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 20px 20px 14px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .panel-title {
+    margin: 0;
+    font-size: 1.05rem;
+    letter-spacing: -0.03em;
+  }
+
+  .result-count {
+    color: var(--muted);
+    font-size: 0.84rem;
+    font-weight: 700;
+  }
+
+  .year-pills {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 14px 20px 0;
+  }
+
+  .year-pill {
+    flex: 0 0 auto;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.74);
+    color: var(--muted);
+    padding: 7px 10px;
     cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
-  }
-  .student-card:hover { border-color: #d4a853; background: #1a4a7a; }
-  .student-card.active { border-color: #d4a853; background: #1e3060; }
-  .student-card .name { font-size: 1.1rem; color: #e8d5a3; font-weight: bold; }
-  .student-card .year { color: #8b7d6b; font-size: 0.85rem; margin-left: 0.5rem; }
-  .student-card .hook { color: #9a8c7a; font-size: 0.85rem; margin-top: 0.25rem; line-height: 1.3; }
-  .stats-mini {
-    display: flex; gap: 0.4rem; margin-top: 0.5rem; flex-wrap: wrap;
-  }
-  .stat-badge {
-    background: #1a1a2e; color: #7a9cc6; font-size: 0.7rem;
-    padding: 2px 6px; border-radius: 4px; font-family: monospace;
+    font-size: 0.78rem;
+    font-weight: 800;
   }
 
-  /* ── Detail View ── */
-  #detail { display: none; }
-  #detail.visible { display: block; }
-  .detail-header { display: flex; justify-content: space-between; align-items: baseline; }
-  .detail-header h2 { border: none; margin: 0; }
-  .detail-section { margin-top: 1rem; }
-  .detail-section h3 {
-    color: #d4a853; font-size: 0.9rem; text-transform: uppercase;
-    letter-spacing: 1px; margin-bottom: 0.3rem;
+  .year-pill.active {
+    border-color: rgba(31, 111, 120, 0.35);
+    background: #eaf5f1;
+    color: var(--lake-dark);
   }
-  .detail-section p { color: #b0a38b; line-height: 1.5; font-size: 0.95rem; }
 
-  .stat-bar-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem; }
-  .stat-bar-label { width: 90px; text-align: right; color: #8b7d6b; font-size: 0.8rem; text-transform: uppercase; }
-  .stat-bar-track { flex: 1; height: 14px; background: #1a1a2e; border-radius: 7px; overflow: hidden; }
-  .stat-bar-fill { height: 100%; border-radius: 7px; transition: width 0.3s; }
-  .stat-bar-val { width: 24px; text-align: center; font-family: monospace; font-size: 0.85rem; color: #c0b090; }
+  .student-list {
+    max-height: calc(100vh - 390px);
+    min-height: 420px;
+    overflow: auto;
+    padding: 14px 12px 18px;
+    scrollbar-color: rgba(31, 111, 120, 0.4) transparent;
+  }
+
+  .student-card {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 12px;
+    border: 1px solid transparent;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.68);
+    color: var(--ink);
+    cursor: pointer;
+    text-align: left;
+    transition: transform 0.14s ease, border-color 0.14s ease, background 0.14s ease, box-shadow 0.14s ease;
+  }
+
+  .student-card:hover {
+    transform: translateY(-1px);
+    border-color: rgba(31, 111, 120, 0.24);
+    box-shadow: var(--soft-shadow);
+  }
+
+  .student-card.active {
+    border-color: rgba(31, 111, 120, 0.45);
+    background: linear-gradient(135deg, rgba(234, 245, 241, 0.96), rgba(255, 248, 227, 0.88));
+    box-shadow: var(--soft-shadow);
+  }
+
+  .avatar {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--lake), var(--pine));
+    color: var(--white);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+  }
+
+  .student-topline {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .student-name {
+    overflow: hidden;
+    color: var(--ink);
+    font-weight: 850;
+    letter-spacing: -0.03em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .student-year {
+    flex: 0 0 auto;
+    color: var(--lake-dark);
+    font-size: 0.73rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .student-hook {
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.38;
+  }
+
+  .mini-stats {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 9px;
+  }
+
+  .mini-stat, .trait-chip, .empty-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid rgba(31, 111, 120, 0.14);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.74);
+    color: var(--lake-dark);
+    padding: 4px 8px;
+    font-size: 0.72rem;
+    font-weight: 800;
+  }
+
+  .empty-state {
+    padding: 48px 20px;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .detail-panel {
+    min-height: 680px;
+    overflow: hidden;
+  }
+
+  .detail-empty {
+    display: grid;
+    place-items: center;
+    min-height: 680px;
+    padding: 42px;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .detail-empty strong {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--ink);
+    font-size: 1.35rem;
+    letter-spacing: -0.04em;
+  }
+
+  .profile-hero {
+    position: relative;
+    padding: 26px;
+    border-bottom: 1px solid var(--line);
+    background:
+      linear-gradient(135deg, rgba(31, 111, 120, 0.11), rgba(193, 139, 50, 0.1)),
+      rgba(255, 255, 255, 0.64);
+  }
+
+  .profile-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+
+  .profile-heading {
+    display: grid;
+    grid-template-columns: 74px minmax(0, 1fr);
+    gap: 16px;
+    align-items: center;
+  }
+
+  .profile-avatar {
+    display: grid;
+    place-items: center;
+    width: 74px;
+    height: 74px;
+    border: 1px solid rgba(255, 255, 255, 0.58);
+    border-radius: 24px;
+    background: linear-gradient(135deg, var(--lake), var(--pine));
+    color: var(--white);
+    font-size: 1.65rem;
+    font-weight: 900;
+    box-shadow: 0 18px 36px rgba(31, 111, 120, 0.24);
+  }
+
+  .profile-heading h2 {
+    margin: 0;
+    font-size: clamp(2rem, 4vw, 3.9rem);
+    line-height: 0.96;
+    letter-spacing: -0.07em;
+  }
+
+  .profile-year {
+    display: inline-flex;
+    width: fit-content;
+    margin-bottom: 10px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.8);
+    color: var(--lake-dark);
+    font-size: 0.78rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .profile-hook {
+    max-width: 860px;
+    margin: 20px 0 0;
+    color: var(--muted);
+    font-size: 1.08rem;
+    font-weight: 600;
+    line-height: 1.6;
+  }
+
+  .profile-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .story-grid {
+    display: grid;
+    gap: 12px;
+  }
+
+  .story-card, .stats-card, .traits-card, .form-card {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.72);
+    padding: 18px;
+  }
+
+  .story-card h3, .stats-card h3, .traits-card h3, .form-card h2 {
+    margin: 0 0 9px;
+    color: var(--lake-dark);
+    font-size: 0.82rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .story-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.98rem;
+    line-height: 1.62;
+  }
+
+  .side-stack {
+    display: grid;
+    gap: 12px;
+    align-content: start;
+  }
+
+  .stat-row {
+    display: grid;
+    grid-template-columns: 92px minmax(0, 1fr) 42px;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 11px;
+  }
+
+  .stat-label {
+    color: var(--muted);
+    font-size: 0.76rem;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .stat-track {
+    height: 10px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(37, 33, 27, 0.09);
+  }
+
+  .stat-fill {
+    height: 100%;
+    border-radius: inherit;
+    transition: width 0.3s ease;
+  }
+
+  .stat-value {
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    font-size: 0.82rem;
+    font-weight: 900;
+    text-align: right;
+  }
+
+  .trait-list {
+    display: grid;
+    gap: 10px;
+  }
 
   .trait-card {
-    background: #1a1a2e; border-left: 3px solid #d4a853;
-    padding: 0.5rem 0.75rem; margin-bottom: 0.4rem; border-radius: 0 6px 6px 0;
+    padding: 12px;
+    border: 1px solid rgba(31, 111, 120, 0.14);
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(234, 245, 241, 0.72), rgba(255, 248, 227, 0.62));
   }
-  .trait-card .trait-name { color: #e8d5a3; font-weight: bold; font-size: 0.9rem; }
-  .trait-card .trait-effect { color: #9a8c7a; font-size: 0.8rem; margin-top: 0.15rem; }
 
-  /* ── Add Form ── */
+  .trait-name {
+    color: var(--ink);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+  }
+
+  .trait-effect {
+    margin-top: 4px;
+    color: var(--muted);
+    font-size: 0.86rem;
+    line-height: 1.45;
+  }
+
   #add-form { display: none; }
   #add-form.visible { display: block; }
-  .btn {
-    background: #d4a853; color: #1a1a2e; border: none;
-    padding: 0.5rem 1.2rem; border-radius: 6px; cursor: pointer;
-    font-family: 'Georgia', serif; font-size: 0.9rem; font-weight: bold;
-    transition: background 0.2s;
-  }
-  .btn:hover { background: #e8c56d; }
-  .btn-secondary { background: #2a3a5c; color: #d4a853; }
-  .btn-secondary:hover { background: #3a4a7c; }
-  .btn-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+  #detail.hidden { display: none; }
 
-  .form-group { margin-bottom: 0.75rem; }
-  .form-group label {
-    display: block; color: #d4a853; font-size: 0.8rem;
-    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.2rem;
+  .form-card {
+    margin: 20px;
   }
-  .form-group input, .form-group textarea, .form-group select {
-    width: 100%; background: #1a1a2e; border: 1px solid #2a3a5c;
-    color: #e0d6c2; padding: 0.5rem; border-radius: 6px;
-    font-family: 'Georgia', serif; font-size: 0.9rem;
+
+  .form-intro {
+    margin: -2px 0 18px;
+    color: var(--muted);
+    line-height: 1.5;
   }
-  .form-group textarea { resize: vertical; min-height: 60px; }
-  .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-    outline: none; border-color: #d4a853;
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
   }
+
+  .form-group.full { grid-column: 1 / -1; }
+
+  label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--ink);
+    font-size: 0.82rem;
+    font-weight: 900;
+  }
+
   .hint-text {
-    color: #6a7b8c; font-size: 0.72rem; line-height: 1.3;
-    margin-top: 0.1rem; margin-bottom: 0.3rem;
+    margin: -2px 0 7px;
+    color: var(--faint);
+    font-size: 0.78rem;
+    line-height: 1.35;
+  }
+
+  input, textarea, select {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    background: rgba(255, 255, 255, 0.86);
+    color: var(--ink);
+    padding: 11px 12px;
+    outline: none;
+  }
+
+  textarea {
+    min-height: 92px;
+    resize: vertical;
+  }
+
+  .form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
   }
 
   .toast {
-    position: fixed; bottom: 2rem; right: 2rem;
-    background: #0f3460; border: 1px solid #d4a853;
-    color: #e8d5a3; padding: 1rem 1.5rem; border-radius: 8px;
-    opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 100;
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    z-index: 100;
+    max-width: min(420px, calc(100% - 44px));
+    padding: 14px 16px;
+    border: 1px solid rgba(31, 111, 120, 0.28);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow: var(--shadow);
+    color: var(--lake-dark);
+    font-weight: 800;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(12px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
   }
-  .toast.show { opacity: 1; }
-  .toast.error { border-color: #c44; color: #e88; }
+
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.error { border-color: rgba(141, 58, 69, 0.28); color: var(--berry); }
+
+  @media (max-width: 1100px) {
+    .hero { grid-template-columns: 1fr; }
+    .hero-stats { min-width: 0; }
+    .app-layout { grid-template-columns: 1fr; }
+    .roster-panel { position: relative; top: 0; }
+    .student-list { max-height: none; }
+    .profile-body { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 760px) {
+    .page-shell { width: min(100% - 24px, 1500px); padding-top: 12px; }
+    .hero, .panel { border-radius: 18px; }
+    .hero { padding: 22px; }
+    .hero-stats, .toolbar, .form-grid { grid-template-columns: 1fr; }
+    .toolbar { align-items: stretch; }
+    .profile-heading { grid-template-columns: 1fr; }
+    .profile-body, .profile-hero, .form-card { padding: 16px; }
+    .form-card { margin: 12px; }
+    .stat-row { grid-template-columns: 78px minmax(0, 1fr) 36px; }
+  }
 </style>
 </head>
 <body>
-
-<header>
-  <h1>🏰 Boundary Waters Academy</h1>
-  <p>Student Registry</p>
-</header>
-
-<div class="layout">
-  <!-- Left: Student List -->
-  <div class="panel" id="list-panel">
-    <h2>Students</h2>
-    <div class="btn-row">
-      <button class="btn" onclick="showAddForm()">+ Add Student</button>
-      <button class="btn btn-secondary" onclick="location.reload()">↻ Refresh</button>
+<div class="page-shell">
+  <header class="hero">
+    <div>
+      <div class="eyebrow">Boundary Waters Academy</div>
+      <h1>Student Registry</h1>
+      <p class="hero-copy">A campus of lodges and workshops on a hidden lake in the Minnesota Boundary Waters. Three hundred students arrive each autumn, joining a year-round village that has watched the waters for generations. Search the roster, filter by year, scan strengths, and open a full profile.</p>
     </div>
-    <div id="student-list">Loading...</div>
-  </div>
-
-  <!-- Right: Detail / Add Form -->
-  <div class="panel">
-    <div id="add-form">
-      <h2>Add Student</h2>
-      <form id="student-form" onsubmit="submitStudent(event)">
-        <div class="form-group">
-          <label>Name *</label>
-          <div class="hint-text">What's their full name?</div>
-          <input name="name" required>
-        </div>
-        <div class="form-group">
-          <label>Year *</label>
-          <div class="hint-text">Eight years at Boundary Waters Academy. First-years are brand new, eighth-years nearly graduated.</div>
-          <select name="year" required>
-            <option value="">—</option>
-            <option>first-year</option><option>second-year</option><option>third-year</option><option>fourth-year</option>
-            <option>fifth-year</option><option>sixth-year</option><option>seventh-year</option><option>eighth-year</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Hook *</label>
-          <div class="hint-text">One sentence that captures them. If flipping through a yearbook, what makes you stop at this kid? What's their core conflict?</div>
-          <textarea name="hook" required></textarea>
-        </div>
-        <div class="form-group">
-          <label>Background *</label>
-          <div class="hint-text">Where they come from — family, hometown, how they landed at this school. Born into magic, or did it find them late?</div>
-          <textarea name="background" required></textarea>
-        </div>
-        <div class="form-group">
-          <label>Motivation *</label>
-          <div class="hint-text">What drives them? What are they working toward or quietly hoping for?</div>
-          <textarea name="motivation" required></textarea>
-        </div>
-        <div class="form-group">
-          <label>Fear *</label>
-          <div class="hint-text">What haunts them? The fear or insecurity they don't talk about.</div>
-          <textarea name="fear" required></textarea>
-        </div>
-        <div class="form-group">
-          <label>Demeanor *</label>
-          <div class="hint-text">How they move through the world. Loud or quiet? Leader or follower? Do people gravitate toward them, or do they have to work for it?</div>
-          <textarea name="demeanor" required></textarea>
-        </div>
-        <div class="form-group">
-          <label>Strength *</label>
-          <div class="hint-text">A talent or quality outside the stat block. Something human — a skill, a habit, a way of seeing the world.</div>
-          <textarea name="strength" required></textarea>
-        </div>
-        <div class="form-group">
-          <label>Weakness *</label>
-          <div class="hint-text">The pattern or blind spot that keeps tripping them up. What do they keep doing even though it hurts them?</div>
-          <textarea name="weakness" required></textarea>
-        </div>
-
-        <p style="color:#8b7d6b;font-size:0.8rem;margin-top:1rem;">Stats and traits are assigned after submission based on the profile you've written.</p>
-
-        <div class="btn-row" style="margin-top:0.5rem;">
-          <button type="submit" class="btn">Save Student</button>
-          <button type="button" class="btn btn-secondary" onclick="hideAddForm()">Cancel</button>
-        </div>
-      </form>
+    <div class="hero-stats" aria-label="Roster summary">
+      <div class="metric"><strong id="metric-total">0</strong><span>Total students</span></div>
+      <div class="metric"><strong id="metric-years">0</strong><span>Years active</span></div>
+      <div class="metric"><strong id="metric-first-years">0</strong><span>First-years</span></div>
     </div>
+  </header>
 
-    <div id="detail">
-      <p style="color:#8b7d6b;">← Select a student to view their profile</p>
-    </div>
-  </div>
+  <section class="toolbar" aria-label="Roster controls">
+    <input id="search-input" class="field-control" type="search" placeholder="Search by name, hook, or year..." autocomplete="off">
+    <select id="year-filter" class="field-control" aria-label="Filter by year">
+      <option value="all">All years</option>
+    </select>
+    <select id="sort-select" class="field-control" aria-label="Sort students">
+      <option value="id">Sort by arrival</option>
+      <option value="name">Sort by name</option>
+      <option value="year">Sort by year</option>
+      <option value="arcana">Sort by arcana</option>
+      <option value="heart">Sort by heart</option>
+      <option value="courage">Sort by courage</option>
+    </select>
+    <button class="btn btn-secondary" id="reset-btn" type="button">Reset</button>
+    <button class="btn" id="new-student-btn" type="button">New student</button>
+  </section>
+
+  <main class="app-layout">
+    <aside class="panel roster-panel">
+      <div class="panel-header">
+        <h2 class="panel-title">Roster</h2>
+        <span class="result-count" id="result-count">Loading...</span>
+      </div>
+      <div class="year-pills" id="year-pills" aria-label="Quick year filters"></div>
+      <div id="student-list" class="student-list">Loading...</div>
+    </aside>
+
+    <section class="panel detail-panel" aria-live="polite">
+      <div id="add-form">
+        <div class="form-card">
+          <h2>Add Student</h2>
+          <p class="form-intro">Add the narrative first. Stats and traits can be assigned after the profile has a shape.</p>
+          <form id="student-form">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="name">Name *</label>
+                <div class="hint-text">Full name as it appears in the school registry.</div>
+                <input id="name" name="name" required>
+              </div>
+              <div class="form-group">
+                <label for="year">Year *</label>
+                <div class="hint-text">Eight years at Boundary Waters Academy.</div>
+                <select id="year" name="year" required>
+                  <option value="">Select a year</option>
+                  <option>first-year</option><option>second-year</option><option>third-year</option><option>fourth-year</option>
+                  <option>fifth-year</option><option>sixth-year</option><option>seventh-year</option><option>eighth-year</option>
+                </select>
+              </div>
+              <div class="form-group full">
+                <label for="hook">Hook *</label>
+                <div class="hint-text">One sentence that captures their core conflict.</div>
+                <textarea id="hook" name="hook" required></textarea>
+              </div>
+              <div class="form-group full">
+                <label for="background">Background *</label>
+                <div class="hint-text">Family, hometown, and how magic found them.</div>
+                <textarea id="background" name="background" required></textarea>
+              </div>
+              <div class="form-group full">
+                <label for="motivation">Motivation *</label>
+                <textarea id="motivation" name="motivation" required></textarea>
+              </div>
+              <div class="form-group full">
+                <label for="fear">Fear *</label>
+                <textarea id="fear" name="fear" required></textarea>
+              </div>
+              <div class="form-group full">
+                <label for="demeanor">Demeanor *</label>
+                <textarea id="demeanor" name="demeanor" required></textarea>
+              </div>
+              <div class="form-group full">
+                <label for="strength">Strength *</label>
+                <textarea id="strength" name="strength" required></textarea>
+              </div>
+              <div class="form-group full">
+                <label for="weakness">Weakness *</label>
+                <textarea id="weakness" name="weakness" required></textarea>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn">Save student</button>
+              <button type="button" class="btn btn-secondary" id="cancel-add-btn">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div id="detail" class="detail-empty">
+        <div><strong>Select a student</strong>Pick someone from the roster to open their full profile, stats, and traits.</div>
+      </div>
+    </section>
+  </main>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-const STATS = ['courage','wit','heart','discipline','arcana','perception','resilience','cunning'];
+const STATS = ['courage', 'wit', 'heart', 'discipline', 'arcana', 'perception', 'resilience', 'cunning'];
+const YEAR_ORDER = ['first-year', 'second-year', 'third-year', 'fourth-year', 'fifth-year', 'sixth-year', 'seventh-year', 'eighth-year'];
+const STAT_LABELS = {
+  courage: 'Courage', wit: 'Wit', heart: 'Heart', discipline: 'Discipline',
+  arcana: 'Arcana', perception: 'Perception', resilience: 'Resilience', cunning: 'Cunning'
+};
 
-async function loadStudents() {
+let students = [];
+let activeId = null;
+let currentYear = 'all';
+
+const els = {
+  list: document.getElementById('student-list'),
+  resultCount: document.getElementById('result-count'),
+  metricTotal: document.getElementById('metric-total'),
+  metricYears: document.getElementById('metric-years'),
+  metricFirstYears: document.getElementById('metric-first-years'),
+  search: document.getElementById('search-input'),
+  yearFilter: document.getElementById('year-filter'),
+  sort: document.getElementById('sort-select'),
+  reset: document.getElementById('reset-btn'),
+  newStudent: document.getElementById('new-student-btn'),
+  yearPills: document.getElementById('year-pills'),
+  detail: document.getElementById('detail'),
+  addForm: document.getElementById('add-form'),
+  form: document.getElementById('student-form'),
+  cancelAdd: document.getElementById('cancel-add-btn'),
+  toast: document.getElementById('toast')
+};
+
+async function loadStudents({ preserveActive = false } = {}) {
   try {
     const res = await fetch('/api/students');
-    const students = await res.json();
-    const el = document.getElementById('student-list');
-    if (!students.length) { el.innerHTML = '<p style="color:#8b7d6b;">No students yet.</p>'; return; }
-    el.innerHTML = students.map(s => `
-      <div class="student-card" onclick="showDetail(${s.id})" id="card-${s.id}">
-        <div class="name">${esc(s.name)}<span class="year">${s.year}</span></div>
-        <div class="hook">${esc(s.hook).slice(0, 120)}${s.hook.length > 120 ? '...' : ''}</div>
-        <div class="stats-mini">${STATS.map(st => `<span class="stat-badge">${st[0].toUpperCase()}:${s[st] ?? '-'}</span>`).join('')}</div>
-      </div>
-    `).join('');
-  } catch(e) {
-    document.getElementById('student-list').innerHTML = `<p style="color:#c44;">Error: ${esc(e.message)}</p>`;
+    if (!res.ok) throw new Error('Could not load students');
+    students = await res.json();
+    if (!preserveActive && !activeId && students.length) activeId = students[0].id;
+    renderMetrics();
+    renderYearControls();
+    renderRoster();
+    if (activeId) showDetail(activeId, { scrollCard: false });
+  } catch (err) {
+    els.list.innerHTML = `<div class="empty-state">${esc(err.message)}</div>`;
+    toast(err.message, true);
   }
 }
 
-async function showDetail(id) {
-  document.querySelectorAll('.student-card').forEach(c => c.classList.remove('active'));
-  document.getElementById('card-'+id)?.classList.add('active');
-  hideAddForm();
+function renderMetrics() {
+  const yearCount = new Set(students.map(s => s.year).filter(Boolean)).size;
+  const firstYears = students.filter(s => s.year === 'first-year').length;
+  els.metricTotal.textContent = students.length;
+  els.metricYears.textContent = yearCount;
+  els.metricFirstYears.textContent = firstYears;
+}
+
+function renderYearControls() {
+  const existingYears = YEAR_ORDER.filter(year => students.some(s => s.year === year));
+  const options = ['<option value="all">All years</option>', ...existingYears.map(year => `<option value="${year}">${labelYear(year)}</option>`)].join('');
+  if (els.yearFilter.innerHTML !== options) els.yearFilter.innerHTML = options;
+  els.yearFilter.value = currentYear;
+
+  els.yearPills.innerHTML = [
+    pillHtml('all', `All (${students.length})`),
+    ...existingYears.map(year => pillHtml(year, `${labelYear(year)} (${students.filter(s => s.year === year).length})`))
+  ].join('');
+}
+
+function pillHtml(value, label) {
+  return `<button class="year-pill ${currentYear === value ? 'active' : ''}" type="button" data-year="${value}">${esc(label)}</button>`;
+}
+
+function renderRoster() {
+  const filtered = getFilteredStudents();
+  els.resultCount.textContent = `${filtered.length} of ${students.length}`;
+
+  if (!filtered.length) {
+    els.list.innerHTML = '<div class="empty-state">No students match those filters.</div>';
+    return;
+  }
+
+  els.list.innerHTML = filtered.map(studentCardHtml).join('');
+}
+
+function getFilteredStudents() {
+  const q = els.search.value.trim().toLowerCase();
+  const sortMode = els.sort.value;
+  let filtered = students.filter(s => currentYear === 'all' || s.year === currentYear);
+
+  if (q) {
+    filtered = filtered.filter(s => [s.name, s.year, s.hook].some(value => String(value || '').toLowerCase().includes(q)));
+  }
+
+  return filtered.sort((a, b) => {
+    if (sortMode === 'name') return String(a.name).localeCompare(String(b.name));
+    if (sortMode === 'year') return yearIndex(a.year) - yearIndex(b.year) || a.id - b.id;
+    if (STATS.includes(sortMode)) return numeric(b[sortMode]) - numeric(a[sortMode]) || String(a.name).localeCompare(String(b.name));
+    return a.id - b.id;
+  });
+}
+
+function studentCardHtml(s) {
+  const topStats = strongestStats(s, 2).map(([name, value]) => `<span class="mini-stat">${STAT_LABELS[name]} ${value}</span>`).join('');
+  return `
+    <button class="student-card ${activeId === s.id ? 'active' : ''}" type="button" data-id="${s.id}">
+      <span class="avatar">${esc(initials(s.name))}</span>
+      <span>
+        <span class="student-topline">
+          <span class="student-name">${esc(s.name)}</span>
+          <span class="student-year">${esc(labelYear(s.year))}</span>
+        </span>
+        <span class="student-hook">${esc(truncate(s.hook, 132))}</span>
+        <span class="mini-stats">${topStats || '<span class="empty-chip">Stats pending</span>'}</span>
+      </span>
+    </button>`;
+}
+
+async function showDetail(id, { scrollCard = true } = {}) {
+  activeId = Number(id);
+  hideAddForm(false);
+  renderRoster();
+  if (scrollCard) document.querySelector(`.student-card[data-id="${activeId}"]`)?.scrollIntoView({ block: 'nearest' });
+
+  els.detail.className = '';
+  els.detail.innerHTML = '<div class="detail-empty"><div><strong>Opening profile...</strong>Gathering the full student record.</div></div>';
 
   try {
-    const res = await fetch('/api/students/' + id);
-    if (!res.ok) throw new Error('Not found');
+    const res = await fetch('/api/students/' + activeId);
     const s = await res.json();
-
-    const barColor = (v) => {
-      if (v >= 8) return '#6abf69';
-      if (v >= 6) return '#d4a853';
-      if (v >= 4) return '#c49b4a';
-      return '#c4653a';
-    };
-
-    const statsHtml = STATS.map(st => {
-      const v = s[st] || 0;
-      return `<div class="stat-bar-row">
-        <span class="stat-bar-label">${st}</span>
-        <div class="stat-bar-track"><div class="stat-bar-fill" style="width:${v*10}%;background:${barColor(v)}"></div></div>
-        <span class="stat-bar-val">${v}/10</span>
-      </div>`;
-    }).join('');
-
-    const traitsHtml = (s.traits || []).map(t =>
-      `<div class="trait-card">
-        <div class="trait-name">${esc(t.name)}</div>
-        <div class="trait-effect">${esc(t.effect)}</div>
-      </div>`
-    ).join('');
-
-    document.getElementById('detail').innerHTML = `
-      <div class="detail-header">
-        <h2>${esc(s.name)} <span style="color:#8b7d6b;font-size:0.8rem;">${s.year}</span></h2>
-        <button class="btn btn-secondary" onclick="document.getElementById('detail').innerHTML='<p style=color:#8b7d6b;>← Select a student to view their profile</p>'">✕</button>
-      </div>
-
-      <div class="detail-section"><h3>Hook</h3><p>${esc(s.hook)}</p></div>
-      <div class="detail-section"><h3>Background</h3><p>${esc(s.background)}</p></div>
-      <div class="detail-section"><h3>Motivation</h3><p>${esc(s.motivation)}</p></div>
-      <div class="detail-section"><h3>Fear</h3><p>${esc(s.fear)}</p></div>
-      <div class="detail-section"><h3>Demeanor</h3><p>${esc(s.demeanor)}</p></div>
-      <div class="detail-section"><h3>Strength</h3><p>${esc(s.strength)}</p></div>
-      <div class="detail-section"><h3>Weakness</h3><p>${esc(s.weakness)}</p></div>
-
-      <div class="detail-section"><h3>Stats</h3>${statsHtml}</div>
-      ${traitsHtml ? `<div class="detail-section"><h3>Traits</h3>${traitsHtml}</div>` : ''}
-    `;
-    document.getElementById('detail').classList.add('visible');
-  } catch(e) {
-    document.getElementById('detail').innerHTML = `<p style="color:#c44;">Error: ${esc(e.message)}</p>`;
+    if (!res.ok) throw new Error(s.error || 'Student not found');
+    renderDetail(s);
+  } catch (err) {
+    els.detail.className = 'detail-empty';
+    els.detail.innerHTML = `<div><strong>Could not open profile</strong>${esc(err.message)}</div>`;
+    toast(err.message, true);
   }
+}
+
+function renderDetail(s) {
+  const statsHtml = STATS.map(stat => statBarHtml(stat, numeric(s[stat]))).join('');
+  const traits = Array.isArray(s.traits) ? s.traits : [];
+  const traitsHtml = traits.length
+    ? traits.map(t => `<div class="trait-card"><div class="trait-name">${esc(t.name)}</div><div class="trait-effect">${esc(t.effect)}</div></div>`).join('')
+    : '<span class="empty-chip">Traits pending</span>';
+
+  els.detail.className = '';
+  els.detail.innerHTML = `
+    <div class="profile-hero">
+      <div class="profile-actions">
+        <button class="btn btn-secondary" type="button" id="close-detail-btn">Close</button>
+      </div>
+      <div class="profile-heading">
+        <div class="profile-avatar">${esc(initials(s.name))}</div>
+        <div>
+          <span class="profile-year">${esc(labelYear(s.year))}</span>
+          <h2>${esc(s.name)}</h2>
+        </div>
+      </div>
+      <p class="profile-hook">${esc(s.hook)}</p>
+    </div>
+    <div class="profile-body">
+      <div class="story-grid">
+        ${storyCard('Background', s.background)}
+        ${storyCard('Motivation', s.motivation)}
+        ${storyCard('Fear', s.fear)}
+        ${storyCard('Demeanor', s.demeanor)}
+        ${storyCard('Strength', s.strength)}
+        ${storyCard('Weakness', s.weakness)}
+      </div>
+      <aside class="side-stack">
+        <div class="stats-card"><h3>Stats</h3>${statsHtml}</div>
+        <div class="traits-card"><h3>Traits</h3><div class="trait-list">${traitsHtml}</div></div>
+      </aside>
+    </div>`;
+
+  document.getElementById('close-detail-btn')?.addEventListener('click', clearDetail);
+}
+
+function storyCard(label, value) {
+  return `<article class="story-card"><h3>${esc(label)}</h3><p>${esc(value || 'Not recorded yet.')}</p></article>`;
+}
+
+function statBarHtml(stat, value) {
+  const safeValue = Math.max(0, Math.min(10, value || 0));
+  return `
+    <div class="stat-row">
+      <span class="stat-label">${STAT_LABELS[stat]}</span>
+      <span class="stat-track"><span class="stat-fill" style="width:${safeValue * 10}%; background:${statColor(safeValue)}"></span></span>
+      <span class="stat-value">${safeValue || '-'}/10</span>
+    </div>`;
 }
 
 function showAddForm() {
-  document.getElementById('add-form').classList.add('visible');
-  document.getElementById('detail').classList.remove('visible');
+  els.addForm.classList.add('visible');
+  els.detail.classList.add('hidden');
+  activeId = null;
+  renderRoster();
+  document.getElementById('name')?.focus();
 }
 
-function hideAddForm() {
-  document.getElementById('add-form').classList.remove('visible');
+function hideAddForm(showDetailPanel = true) {
+  els.addForm.classList.remove('visible');
+  if (showDetailPanel) els.detail.classList.remove('hidden');
 }
 
-async function submitStudent(e) {
-  e.preventDefault();
-  const fd = new FormData(e.target);
-  const body = {
-    name: fd.get('name'), year: fd.get('year'),
-    hook: fd.get('hook'), background: fd.get('background'),
-    motivation: fd.get('motivation'), fear: fd.get('fear'),
-    demeanor: fd.get('demeanor'), strength: fd.get('strength'), weakness: fd.get('weakness'),
-  };
+async function submitStudent(event) {
+  event.preventDefault();
+  const fd = new FormData(event.target);
+  const body = Object.fromEntries(fd.entries());
 
   try {
     const res = await fetch('/api/students', {
@@ -334,29 +1000,105 @@ async function submitStudent(e) {
       body: JSON.stringify(body)
     });
     const data = await res.json();
-    if (!res.ok) throw new Error(data.error);
-    toast(`✅ ${data.name} added!`);
+    if (!res.ok) throw new Error(data.error || 'Could not save student');
+    toast(`${data.name} added`);
+    event.target.reset();
     hideAddForm();
-    e.target.reset();
-    loadStudents();
-  } catch(err) {
-    toast('❌ ' + err.message, true);
+    activeId = data.id;
+    await loadStudents({ preserveActive: true });
+  } catch (err) {
+    toast(err.message, true);
   }
 }
 
-function toast(msg, isErr) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast' + (isErr ? ' error' : '') + ' show';
-  setTimeout(() => t.classList.remove('show'), 3000);
+function clearDetail() {
+  activeId = null;
+  renderRoster();
+  els.detail.className = 'detail-empty';
+  els.detail.innerHTML = '<div><strong>Select a student</strong>Pick someone from the roster to open their full profile, stats, and traits.</div>';
 }
 
-function esc(s) {
-  if (!s) return '';
-  const d = document.createElement('div');
-  d.textContent = s;
-  return d.innerHTML;
+function setYear(value) {
+  currentYear = value;
+  els.yearFilter.value = value;
+  renderYearControls();
+  renderRoster();
 }
+
+function resetFilters() {
+  els.search.value = '';
+  els.sort.value = 'id';
+  setYear('all');
+}
+
+function strongestStats(s, count) {
+  return STATS
+    .map(stat => [stat, numeric(s[stat])])
+    .filter(([, value]) => value > 0)
+    .sort((a, b) => b[1] - a[1] || STAT_LABELS[a[0]].localeCompare(STAT_LABELS[b[0]]))
+    .slice(0, count);
+}
+
+function statColor(value) {
+  if (value >= 9) return '#1f6f78';
+  if (value >= 7) return '#2f7d4a';
+  if (value >= 5) return '#c18b32';
+  if (value >= 3) return '#ba6b35';
+  return '#8d3a45';
+}
+
+function labelYear(year) {
+  return String(year || 'Unassigned').replace('-', ' ');
+}
+
+function yearIndex(year) {
+  const idx = YEAR_ORDER.indexOf(year);
+  return idx === -1 ? 99 : idx;
+}
+
+function numeric(value) {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function initials(name) {
+  const parts = String(name || '?').trim().split(/\s+/).slice(0, 2);
+  return parts.map(part => part[0] || '').join('').toUpperCase() || '?';
+}
+
+function truncate(value, length) {
+  const text = String(value || 'No hook recorded yet.');
+  return text.length > length ? text.slice(0, length - 1).trimEnd() + '…' : text;
+}
+
+function toast(message, isErr = false) {
+  els.toast.textContent = message;
+  els.toast.className = 'toast' + (isErr ? ' error' : '') + ' show';
+  window.clearTimeout(toast.timer);
+  toast.timer = window.setTimeout(() => els.toast.classList.remove('show'), 3200);
+}
+
+function esc(value) {
+  const div = document.createElement('div');
+  div.textContent = value == null ? '' : String(value);
+  return div.innerHTML;
+}
+
+els.list.addEventListener('click', event => {
+  const card = event.target.closest('.student-card');
+  if (card) showDetail(card.dataset.id);
+});
+els.yearPills.addEventListener('click', event => {
+  const pill = event.target.closest('.year-pill');
+  if (pill) setYear(pill.dataset.year);
+});
+els.search.addEventListener('input', renderRoster);
+els.sort.addEventListener('change', renderRoster);
+els.yearFilter.addEventListener('change', event => setYear(event.target.value));
+els.reset.addEventListener('click', resetFilters);
+els.newStudent.addEventListener('click', showAddForm);
+els.cancelAdd.addEventListener('click', () => { hideAddForm(); if (activeId) showDetail(activeId); });
+els.form.addEventListener('submit', submitStudent);
 
 loadStudents();
 </script>
