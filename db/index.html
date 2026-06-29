@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Boundary Waters Academy | Student Registry</title>
+<title>Boundary Waters Academy</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -147,6 +147,43 @@
     text-transform: uppercase;
     letter-spacing: 0.06em;
   }
+
+  /* ── Tab navigation ── */
+  .tab-nav {
+    display: flex;
+    gap: 4px;
+    margin: 20px 0 0;
+    padding: 5px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.58);
+    backdrop-filter: blur(10px);
+  }
+  .tab-btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 44px;
+    padding: 0 18px;
+    border-radius: 12px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 0.92rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    transition: background 0.14s ease, color 0.14s ease;
+  }
+  .tab-btn:hover { color: var(--ink); background: rgba(255, 255, 255, 0.7); }
+  .tab-btn.active {
+    background: rgba(255, 255, 255, 0.92);
+    color: var(--lake-dark);
+    box-shadow: 0 2px 8px rgba(31, 111, 120, 0.12);
+  }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
 
   .toolbar {
     display: grid;
@@ -495,6 +532,13 @@
     text-transform: uppercase;
   }
 
+  .story-hint {
+    margin: -4px 0 10px;
+    color: var(--faint);
+    font-size: 0.78rem;
+    line-height: 1.35;
+  }
+
   .story-card p {
     margin: 0;
     color: var(--muted);
@@ -651,6 +695,31 @@
   .toast.show { opacity: 1; transform: translateY(0); }
   .toast.error { border-color: rgba(141, 58, 69, 0.28); color: var(--berry); }
 
+  @keyframes modalSlideUp {
+    from { transform: translateY(8%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .modal-close-btn {
+    display: none;
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 51;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.92);
+    border: 1px solid rgba(75,61,42,0.18);
+    color: var(--ink);
+    cursor: pointer;
+    font-size: 1.2rem;
+    font-weight: 700;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  }
+
   @media (max-width: 1100px) {
     .hero { grid-template-columns: 1fr; }
     .hero-stats { min-width: 0; }
@@ -658,6 +727,21 @@
     .roster-panel { position: relative; top: 0; }
     .student-list { max-height: none; }
     .profile-body { grid-template-columns: 1fr; }
+
+    .detail-panel { display: none; }
+    .detail-panel.modal-open {
+      display: block;
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      border-radius: 0;
+      background: var(--paper);
+      overflow-y: auto;
+      animation: modalSlideUp 0.28s ease;
+    }
+    .detail-panel.modal-open .modal-close-btn {
+      display: flex;
+    }
   }
 
   @media (max-width: 760px) {
@@ -671,6 +755,143 @@
     .form-card { margin: 12px; }
     .stat-row { grid-template-columns: 78px minmax(0, 1fr) 36px; }
   }
+
+  /* ── Campus view ── */
+  .campus-intro {
+    margin-bottom: 20px;
+    padding: 20px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.62);
+    color: var(--muted);
+    font-size: 0.98rem;
+    line-height: 1.62;
+  }
+  .campus-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 400px);
+    gap: 20px;
+    align-items: start;
+  }
+  .campus-map {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+  }
+  .location-card {
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.72);
+    cursor: pointer;
+    transition: transform 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
+  }
+  .location-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(31, 111, 120, 0.3);
+    box-shadow: var(--soft-shadow);
+  }
+  .location-card.selected {
+    border-color: rgba(31, 111, 120, 0.45);
+    background: linear-gradient(135deg, rgba(234, 245, 241, 0.96), rgba(255, 248, 227, 0.88));
+  }
+  .location-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin-bottom: 8px;
+    border-radius: 9px;
+    background: rgba(31, 111, 120, 0.1);
+    font-size: 1rem;
+  }
+  .location-name {
+    color: var(--ink);
+    font-weight: 850;
+    font-size: 0.95rem;
+    letter-spacing: -0.03em;
+  }
+  .location-category {
+    display: inline-block;
+    margin-top: 3px;
+    color: var(--lake-dark);
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .location-teaser {
+    margin-top: 7px;
+    color: var(--muted);
+    font-size: 0.84rem;
+    line-height: 1.45;
+  }
+  .campus-detail {
+    position: sticky;
+    top: 18px;
+    padding: 24px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.76);
+    box-shadow: var(--shadow);
+    min-height: 360px;
+  }
+  .campus-detail h3 {
+    margin: 0 0 4px;
+    color: var(--lake-dark);
+    font-size: 1.3rem;
+    letter-spacing: -0.04em;
+  }
+  .campus-detail .detail-cat {
+    display: inline-block;
+    margin-bottom: 12px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: rgba(31, 111, 120, 0.1);
+    color: var(--lake-dark);
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .campus-detail .detail-body {
+    color: var(--muted);
+    font-size: 0.96rem;
+    line-height: 1.62;
+  }
+  .campus-detail .detail-placeholder {
+    color: var(--muted);
+    text-align: center;
+    padding: 40px 16px;
+  }
+  .campus-detail .detail-placeholder strong {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--ink);
+    font-size: 1.05rem;
+    letter-spacing: -0.03em;
+  }
+  @media (max-width: 1100px) {
+    .campus-layout { grid-template-columns: 1fr; }
+    .campus-detail {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      border-radius: 0;
+      background: var(--paper);
+      overflow-y: auto;
+      padding: 48px 20px 24px;
+      animation: modalSlideUp 0.28s ease;
+    }
+    .campus-detail.has-selection {
+      display: block;
+    }
+  }
+  @media (max-width: 760px) {
+    .campus-map { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
@@ -678,7 +899,7 @@
   <header class="hero">
     <div>
       <div class="eyebrow">Boundary Waters Academy</div>
-      <h1>Student Registry</h1>
+      <h1>Boundary Waters Academy</h1>
       <p class="hero-copy">A campus of lodges and workshops on a hidden lake in the Minnesota Boundary Waters. Three hundred students arrive each autumn, joining a year-round village that has watched the waters for generations. Search the roster, filter by year, scan strengths, and open a full profile.</p>
     </div>
     <div class="hero-stats" aria-label="Roster summary">
@@ -687,6 +908,13 @@
       <div class="metric"><strong id="metric-first-years">0</strong><span>First-years</span></div>
     </div>
   </header>
+
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="students">Students</button>
+    <button class="tab-btn" data-tab="campus">Campus</button>
+  </nav>
+
+  <div id="tab-students" class="tab-content active">
 
   <section class="toolbar" aria-label="Roster controls">
     <input id="search-input" class="field-control" type="search" placeholder="Search by name, hook, or year..." autocomplete="off">
@@ -716,6 +944,7 @@
     </aside>
 
     <section class="panel detail-panel" aria-live="polite">
+      <button class="modal-close-btn" id="modal-close-btn" aria-label="Close">&times;</button>
       <div id="add-form">
         <div class="form-card">
           <h2>Add Student</h2>
@@ -776,10 +1005,24 @@
       </div>
 
       <div id="detail" class="detail-empty">
-        <div><strong>Select a student</strong>Pick someone from the roster to open their full profile, stats, and traits.</div>
+        <div><strong>Select a student</strong>Pick someone from the roster to open their full profile, stats, and traits.<br><br>To add someone to the directory, click <strong>New student</strong> in the toolbar above.</div>
       </div>
     </section>
   </main>
+  </div>
+
+  <div id="tab-campus" class="tab-content">
+    <div class="campus-intro">
+      A campus of lodges and workshops on a lake in the Minnesota Boundary Waters — not on any map, not reachable by road. Three hundred students arrive each autumn, joining the two hundred or so people who live here year-round. The village and the school grew up together; nobody agrees which came first. The lake is old, the pines are older, and everyone here is learning something.
+    </div>
+    <div class="campus-layout">
+      <div class="campus-map" id="campus-map"></div>
+      <aside class="campus-detail" id="campus-detail">
+        <div class="detail-placeholder"><strong>Select a location</strong>Click a place on the map to read about it.</div>
+      </aside>
+    </div>
+  </div>
+
 </div>
 
 <div class="toast" id="toast"></div>
@@ -945,7 +1188,7 @@ function renderDetail(s) {
     </div>
     <div class="profile-body">
       <div class="story-grid">
-        ${storyCard('Background', s.background)}
+        ${storyCard('Background', s.background, 'Family, hometown, and how magic found them.')}
         ${storyCard('Motivation', s.motivation)}
         ${storyCard('Fear', s.fear)}
         ${storyCard('Demeanor', s.demeanor)}
@@ -959,10 +1202,12 @@ function renderDetail(s) {
     </div>`;
 
   document.getElementById('close-detail-btn')?.addEventListener('click', clearDetail);
+  document.querySelector('.detail-panel').classList.add('modal-open');
 }
 
-function storyCard(label, value) {
-  return `<article class="story-card"><h3>${esc(label)}</h3><p>${esc(value || 'Not recorded yet.')}</p></article>`;
+function storyCard(label, value, hint) {
+  const subtitle = hint ? `<div class="story-hint">${esc(hint)}</div>` : '';
+  return `<article class="story-card"><h3>${esc(label)}</h3>${subtitle}<p>${esc(value || 'Not recorded yet.')}</p></article>`;
 }
 
 function statBarHtml(stat, value) {
@@ -981,11 +1226,13 @@ function showAddForm() {
   activeId = null;
   renderRoster();
   document.getElementById('name')?.focus();
+  document.querySelector('.detail-panel').classList.add('modal-open');
 }
 
 function hideAddForm(showDetailPanel = true) {
   els.addForm.classList.remove('visible');
   if (showDetailPanel) els.detail.classList.remove('hidden');
+  if (!activeId) document.querySelector('.detail-panel').classList.remove('modal-open');
 }
 
 async function submitStudent(event) {
@@ -1015,7 +1262,8 @@ function clearDetail() {
   activeId = null;
   renderRoster();
   els.detail.className = 'detail-empty';
-  els.detail.innerHTML = '<div><strong>Select a student</strong>Pick someone from the roster to open their full profile, stats, and traits.</div>';
+  els.detail.innerHTML = '<div><strong>Select a student</strong>Pick someone from the roster to open their full profile, stats, and traits.<br><br>To add someone to the directory, click <strong>New student</strong> in the toolbar above.</div>';
+  document.querySelector('.detail-panel').classList.remove('modal-open');
 }
 
 function setYear(value) {
@@ -1100,7 +1348,103 @@ els.newStudent.addEventListener('click', showAddForm);
 els.cancelAdd.addEventListener('click', () => { hideAddForm(); if (activeId) showDetail(activeId); });
 els.form.addEventListener('submit', submitStudent);
 
+// Modal close button
+document.getElementById('modal-close-btn')?.addEventListener('click', () => {
+  document.querySelector('.detail-panel').classList.remove('modal-open');
+  clearDetail();
+});
+
 loadStudents();
+
+// ── Campus tab ──
+
+let locations = [];
+let selectedLocationSlug = null;
+let locationsLoaded = false;
+
+async function loadLocations() {
+  try {
+    const res = await fetch('/api/locations');
+    if (!res.ok) throw new Error('Could not load locations');
+    locations = await res.json();
+    locationsLoaded = true;
+  } catch (err) {
+    console.error(err);
+    locations = [];
+  }
+}
+
+async function ensureLocations() {
+  if (!locationsLoaded) await loadLocations();
+}
+
+function renderCampusMap() {
+  const map = document.getElementById('campus-map');
+  if (!locations.length) {
+    map.innerHTML = '<div class="empty-state">Loading campus...</div>';
+    return;
+  }
+  map.innerHTML = locations.map(loc => `
+    <div class="location-card ${selectedLocationSlug === loc.slug ? 'selected' : ''}" data-location="${loc.slug}">
+      <div class="location-icon">${esc(loc.icon)}</div>
+      <div class="location-name">${esc(loc.name)}</div>
+      <div class="location-category">${esc(loc.category)}</div>
+      <div class="location-teaser">${esc(loc.teaser)}</div>
+    </div>
+  `).join('');
+}
+
+function showLocationDetail(slug) {
+  selectedLocationSlug = slug;
+  const loc = locations.find(l => l.slug === slug);
+  const detail = document.getElementById('campus-detail');
+  if (!loc) return;
+  detail.classList.add('has-selection');
+  detail.innerHTML = `
+    <button class="modal-close-btn campus-close-btn" aria-label="Close" style="position:absolute;top:14px;right:14px;display:flex;">&times;</button>
+    <div class="location-icon" style="width:40px;height:40px;font-size:1.2rem;margin-bottom:12px">${esc(loc.icon)}</div>
+    <h3>${esc(loc.name)}</h3>
+    <span class="detail-cat">${esc(loc.category)}</span>
+    <div class="detail-body">${esc(loc.description)}</div>
+  `;
+  detail.querySelector('.campus-close-btn')?.addEventListener('click', closeCampusDetail);
+  renderCampusMap();
+}
+
+function closeCampusDetail() {
+  selectedLocationSlug = null;
+  const detail = document.getElementById('campus-detail');
+  detail.classList.remove('has-selection');
+  detail.innerHTML =
+    '<div class="detail-placeholder"><strong>Select a location</strong>Click a place on the map to read about it.</div>';
+  renderCampusMap();
+}
+
+// Tab switching
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const tab = btn.dataset.tab;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    const content = document.getElementById('tab-' + tab);
+    if (content) content.classList.add('active');
+    if (tab === 'campus') {
+      if (!locationsLoaded) await loadLocations();
+      renderCampusMap();
+      selectedLocationSlug = null;
+      const detail = document.getElementById('campus-detail');
+      detail.classList.remove('has-selection');
+      detail.innerHTML =
+        '<div class="detail-placeholder"><strong>Select a location</strong>Click a place on the map to read about it.</div>';
+    }
+  });
+});
+
+document.getElementById('campus-map')?.addEventListener('click', event => {
+  const card = event.target.closest('.location-card');
+  if (card) showLocationDetail(card.dataset.location);
+});
 </script>
 </body>
 </html>

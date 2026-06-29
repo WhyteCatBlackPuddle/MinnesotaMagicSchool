@@ -42,3 +42,17 @@ DROP TRIGGER IF EXISTS trg_students_updated_at ON students;
 CREATE TRIGGER trg_students_updated_at
   BEFORE UPDATE ON students
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+-- ── Campus locations ──
+
+CREATE TABLE IF NOT EXISTS locations (
+  id            SERIAL PRIMARY KEY,
+  slug          TEXT NOT NULL UNIQUE,
+  name          TEXT NOT NULL,
+  category      TEXT NOT NULL,
+  icon          TEXT NOT NULL,
+  teaser        TEXT NOT NULL,
+  description   TEXT NOT NULL,
+  sort_order    INTEGER NOT NULL DEFAULT 0,
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);

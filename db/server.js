@@ -165,6 +165,31 @@ app.delete('/api/students/:id', async (req, res) => {
   }
 });
 
+// ── Campus locations ──
+
+// List all locations
+app.get('/api/locations', async (_req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT id, slug, name, category, icon, teaser, description FROM locations ORDER BY sort_order, id'
+    );
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get one location by slug
+app.get('/api/locations/:slug', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM locations WHERE slug = $1', [req.params.slug]);
+    if (result.rows.length === 0) return res.status(404).json({ error: 'Not found' });
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Health check — tests database connectivity
 app.get('/api/health', async (_req, res) => {
   try {
