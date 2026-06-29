@@ -569,6 +569,7 @@
   }
 
   .stat-track {
+    display: block;
     height: 10px;
     overflow: hidden;
     border-radius: 999px;
@@ -576,6 +577,7 @@
   }
 
   .stat-fill {
+    display: block;
     height: 100%;
     border-radius: inherit;
     transition: width 0.3s ease;
@@ -953,12 +955,12 @@
             <div class="form-grid">
               <div class="form-group">
                 <label for="name">Name *</label>
-                <div class="hint-text">Full name as it appears in the school registry.</div>
+                <div class="hint-text">What's their name? Full name as it appears in the school registry.</div>
                 <input id="name" name="name" required>
               </div>
               <div class="form-group">
                 <label for="year">Year *</label>
-                <div class="hint-text">Eight years at Boundary Waters Academy.</div>
+                <div class="hint-text">What year are they? First through eighth year at Boundary Waters Academy.</div>
                 <select id="year" name="year" required>
                   <option value="">Select a year</option>
                   <option>first-year</option><option>second-year</option><option>third-year</option><option>fourth-year</option>
@@ -967,32 +969,37 @@
               </div>
               <div class="form-group full">
                 <label for="hook">Hook *</label>
-                <div class="hint-text">One sentence that captures their core conflict.</div>
+                <div class="hint-text">One sentence that captures them. If someone was flipping through a yearbook, what makes them stop at this kid?</div>
                 <textarea id="hook" name="hook" required></textarea>
               </div>
               <div class="form-group full">
                 <label for="background">Background *</label>
-                <div class="hint-text">Family, hometown, and how magic found them.</div>
+                <div class="hint-text">Where they come from. Family, hometown, how they landed at this school. Were they born into magic or did it find them late?</div>
                 <textarea id="background" name="background" required></textarea>
               </div>
               <div class="form-group full">
                 <label for="motivation">Motivation *</label>
+                <div class="hint-text">What drives them? What are they working toward or quietly hoping for?</div>
                 <textarea id="motivation" name="motivation" required></textarea>
               </div>
               <div class="form-group full">
                 <label for="fear">Fear *</label>
+                <div class="hint-text">What haunts them? The fear or insecurity they don't talk about.</div>
                 <textarea id="fear" name="fear" required></textarea>
               </div>
               <div class="form-group full">
                 <label for="demeanor">Demeanor *</label>
+                <div class="hint-text">How they move through the world. Loud or quiet? Leader or follower? Do people gravitate toward them or do they have to work for it?</div>
                 <textarea id="demeanor" name="demeanor" required></textarea>
               </div>
               <div class="form-group full">
                 <label for="strength">Strength *</label>
+                <div class="hint-text">What they're good at. A skill or quality that wouldn't show up in the stat block. Something human.</div>
                 <textarea id="strength" name="strength" required></textarea>
               </div>
               <div class="form-group full">
                 <label for="weakness">Weakness *</label>
+                <div class="hint-text">What trips them up. The pattern or blind spot that keeps causing them problems.</div>
                 <textarea id="weakness" name="weakness" required></textarea>
               </div>
             </div>
@@ -1063,11 +1070,9 @@ async function loadStudents({ preserveActive = false } = {}) {
     const res = await fetch('/api/students');
     if (!res.ok) throw new Error('Could not load students');
     students = await res.json();
-    if (!preserveActive && !activeId && students.length) activeId = students[0].id;
     renderMetrics();
     renderYearControls();
     renderRoster();
-    if (activeId) showDetail(activeId, { scrollCard: false });
   } catch (err) {
     els.list.innerHTML = `<div class="empty-state">${esc(err.message)}</div>`;
     toast(err.message, true);
