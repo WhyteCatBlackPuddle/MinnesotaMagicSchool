@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Magic School — Student Registry</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Georgia', serif;
+    background: #1a1a2e;
+    color: #e0d6c2;
+    min-height: 100vh;
+    padding: 2rem;
+  }
+  header {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  header h1 {
+    font-size: 2.5rem;
+    color: #d4a853;
+    letter-spacing: 2px;
+  }
+  header p {
+    color: #8b7d6b;
+    font-style: italic;
+    margin-top: 0.25rem;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    align-items: start;
+  }
+
+  /* ── Student List ── */
+  .panel {
+    background: #16213e;
+    border: 1px solid #2a3a5c;
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  .panel h2 {
+    color: #d4a853;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #2a3a5c;
+    padding-bottom: 0.5rem;
+  }
+  .student-card {
+    background: #0f3460;
+    border: 1px solid #1a4a7a;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .student-card:hover { border-color: #d4a853; background: #1a4a7a; }
+  .student-card.active { border-color: #d4a853; background: #1e3060; }
+  .student-card .name { font-size: 1.1rem; color: #e8d5a3; font-weight: bold; }
+  .student-card .year { color: #8b7d6b; font-size: 0.85rem; margin-left: 0.5rem; }
+  .student-card .hook { color: #9a8c7a; font-size: 0.85rem; margin-top: 0.25rem; line-height: 1.3; }
+  .stats-mini {
+    display: flex; gap: 0.4rem; margin-top: 0.5rem; flex-wrap: wrap;
+  }
+  .stat-badge {
+    background: #1a1a2e; color: #7a9cc6; font-size: 0.7rem;
+    padding: 2px 6px; border-radius: 4px; font-family: monospace;
+  }
+
+  /* ── Detail View ── */
+  #detail { display: none; }
+  #detail.visible { display: block; }
+  .detail-header { display: flex; justify-content: space-between; align-items: baseline; }
+  .detail-header h2 { border: none; margin: 0; }
+  .detail-section { margin-top: 1rem; }
+  .detail-section h3 {
+    color: #d4a853; font-size: 0.9rem; text-transform: uppercase;
+    letter-spacing: 1px; margin-bottom: 0.3rem;
+  }
+  .detail-section p { color: #b0a38b; line-height: 1.5; font-size: 0.95rem; }
+
+  .stat-bar-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.3rem; }
+  .stat-bar-label { width: 90px; text-align: right; color: #8b7d6b; font-size: 0.8rem; text-transform: uppercase; }
+  .stat-bar-track { flex: 1; height: 14px; background: #1a1a2e; border-radius: 7px; overflow: hidden; }
+  .stat-bar-fill { height: 100%; border-radius: 7px; transition: width 0.3s; }
+  .stat-bar-val { width: 24px; text-align: center; font-family: monospace; font-size: 0.85rem; color: #c0b090; }
+
+  .trait-card {
+    background: #1a1a2e; border-left: 3px solid #d4a853;
+    padding: 0.5rem 0.75rem; margin-bottom: 0.4rem; border-radius: 0 6px 6px 0;
+  }
+  .trait-card .trait-name { color: #e8d5a3; font-weight: bold; font-size: 0.9rem; }
+  .trait-card .trait-effect { color: #9a8c7a; font-size: 0.8rem; margin-top: 0.15rem; }
+
+  /* ── Add Form ── */
+  #add-form { display: none; }
+  #add-form.visible { display: block; }
+  .btn {
+    background: #d4a853; color: #1a1a2e; border: none;
+    padding: 0.5rem 1.2rem; border-radius: 6px; cursor: pointer;
+    font-family: 'Georgia', serif; font-size: 0.9rem; font-weight: bold;
+    transition: background 0.2s;
+  }
+  .btn:hover { background: #e8c56d; }
+  .btn-secondary { background: #2a3a5c; color: #d4a853; }
+  .btn-secondary:hover { background: #3a4a7c; }
+  .btn-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+
+  .form-group { margin-bottom: 0.75rem; }
+  .form-group label {
+    display: block; color: #d4a853; font-size: 0.8rem;
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.2rem;
+  }
+  .form-group input, .form-group textarea, .form-group select {
+    width: 100%; background: #1a1a2e; border: 1px solid #2a3a5c;
+    color: #e0d6c2; padding: 0.5rem; border-radius: 6px;
+    font-family: 'Georgia', serif; font-size: 0.9rem;
+  }
+  .form-group textarea { resize: vertical; min-height: 60px; }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+    outline: none; border-color: #d4a853;
+  }
+  .hint-text {
+    color: #6a7b8c; font-size: 0.72rem; line-height: 1.3;
+    margin-top: 0.1rem; margin-bottom: 0.3rem;
+  }
+
+  .toast {
+    position: fixed; bottom: 2rem; right: 2rem;
+    background: #0f3460; border: 1px solid #d4a853;
+    color: #e8d5a3; padding: 1rem 1.5rem; border-radius: 8px;
+    opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 100;
+  }
+  .toast.show { opacity: 1; }
+  .toast.error { border-color: #c44; color: #e88; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🏰 Boundary Waters Academy</h1>
+  <p>Student Registry</p>
+</header>
+
+<div class="layout">
+  <!-- Left: Student List -->
+  <div class="panel" id="list-panel">
+    <h2>Students</h2>
+    <div class="btn-row">
+      <button class="btn" onclick="showAddForm()">+ Add Student</button>
+      <button class="btn btn-secondary" onclick="location.reload()">↻ Refresh</button>
+    </div>
+    <div id="student-list">Loading...</div>
+  </div>
+
+  <!-- Right: Detail / Add Form -->
+  <div class="panel">
+    <div id="add-form">
+      <h2>Add Student</h2>
+      <form id="student-form" onsubmit="submitStudent(event)">
+        <div class="form-group">
+          <label>Name *</label>
+          <div class="hint-text">What's their full name?</div>
+          <input name="name" required>
+        </div>
+        <div class="form-group">
+          <label>Year *</label>
+          <div class="hint-text">Eight years at Boundary Waters Academy. First-years are brand new, eighth-years nearly graduated.</div>
+          <select name="year" required>
+            <option value="">—</option>
+            <option>first-year</option><option>second-year</option><option>third-year</option><option>fourth-year</option>
+            <option>fifth-year</option><option>sixth-year</option><option>seventh-year</option><option>eighth-year</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Hook *</label>
+          <div class="hint-text">One sentence that captures them. If flipping through a yearbook, what makes you stop at this kid? What's their core conflict?</div>
+          <textarea name="hook" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Background *</label>
+          <div class="hint-text">Where they come from — family, hometown, how they landed at this school. Born into magic, or did it find them late?</div>
+          <textarea name="background" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Motivation *</label>
+          <div class="hint-text">What drives them? What are they working toward or quietly hoping for?</div>
+          <textarea name="motivation" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Fear *</label>
+          <div class="hint-text">What haunts them? The fear or insecurity they don't talk about.</div>
+          <textarea name="fear" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Demeanor *</label>
+          <div class="hint-text">How they move through the world. Loud or quiet? Leader or follower? Do people gravitate toward them, or do they have to work for it?</div>
+          <textarea name="demeanor" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Strength *</label>
+          <div class="hint-text">A talent or quality outside the stat block. Something human — a skill, a habit, a way of seeing the world.</div>
+          <textarea name="strength" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Weakness *</label>
+          <div class="hint-text">The pattern or blind spot that keeps tripping them up. What do they keep doing even though it hurts them?</div>
+          <textarea name="weakness" required></textarea>
+        </div>
+
+        <p style="color:#8b7d6b;font-size:0.8rem;margin-top:1rem;">Stats and traits are assigned after submission based on the profile you've written.</p>
+
+        <div class="btn-row" style="margin-top:0.5rem;">
+          <button type="submit" class="btn">Save Student</button>
+          <button type="button" class="btn btn-secondary" onclick="hideAddForm()">Cancel</button>
+        </div>
+      </form>
+    </div>
+
+    <div id="detail">
+      <p style="color:#8b7d6b;">← Select a student to view their profile</p>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STATS = ['courage','wit','heart','discipline','arcana','perception','resilience','cunning'];
+
+async function loadStudents() {
+  try {
+    const res = await fetch('/api/students');
+    const students = await res.json();
+    const el = document.getElementById('student-list');
+    if (!students.length) { el.innerHTML = '<p style="color:#8b7d6b;">No students yet.</p>'; return; }
+    el.innerHTML = students.map(s => `
+      <div class="student-card" onclick="showDetail(${s.id})" id="card-${s.id}">
+        <div class="name">${esc(s.name)}<span class="year">${s.year}</span></div>
+        <div class="hook">${esc(s.hook).slice(0, 120)}${s.hook.length > 120 ? '...' : ''}</div>
+        <div class="stats-mini">${STATS.map(st => `<span class="stat-badge">${st[0].toUpperCase()}:${s[st] ?? '-'}</span>`).join('')}</div>
+      </div>
+    `).join('');
+  } catch(e) {
+    document.getElementById('student-list').innerHTML = `<p style="color:#c44;">Error: ${esc(e.message)}</p>`;
+  }
+}
+
+async function showDetail(id) {
+  document.querySelectorAll('.student-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('card-'+id)?.classList.add('active');
+  hideAddForm();
+
+  try {
+    const res = await fetch('/api/students/' + id);
+    if (!res.ok) throw new Error('Not found');
+    const s = await res.json();
+
+    const barColor = (v) => {
+      if (v >= 8) return '#6abf69';
+      if (v >= 6) return '#d4a853';
+      if (v >= 4) return '#c49b4a';
+      return '#c4653a';
+    };
+
+    const statsHtml = STATS.map(st => {
+      const v = s[st] || 0;
+      return `<div class="stat-bar-row">
+        <span class="stat-bar-label">${st}</span>
+        <div class="stat-bar-track"><div class="stat-bar-fill" style="width:${v*10}%;background:${barColor(v)}"></div></div>
+        <span class="stat-bar-val">${v}/10</span>
+      </div>`;
+    }).join('');
+
+    const traitsHtml = (s.traits || []).map(t =>
+      `<div class="trait-card">
+        <div class="trait-name">${esc(t.name)}</div>
+        <div class="trait-effect">${esc(t.effect)}</div>
+      </div>`
+    ).join('');
+
+    document.getElementById('detail').innerHTML = `
+      <div class="detail-header">
+        <h2>${esc(s.name)} <span style="color:#8b7d6b;font-size:0.8rem;">${s.year}</span></h2>
+        <button class="btn btn-secondary" onclick="document.getElementById('detail').innerHTML='<p style=color:#8b7d6b;>← Select a student to view their profile</p>'">✕</button>
+      </div>
+
+      <div class="detail-section"><h3>Hook</h3><p>${esc(s.hook)}</p></div>
+      <div class="detail-section"><h3>Background</h3><p>${esc(s.background)}</p></div>
+      <div class="detail-section"><h3>Motivation</h3><p>${esc(s.motivation)}</p></div>
+      <div class="detail-section"><h3>Fear</h3><p>${esc(s.fear)}</p></div>
+      <div class="detail-section"><h3>Demeanor</h3><p>${esc(s.demeanor)}</p></div>
+      <div class="detail-section"><h3>Strength</h3><p>${esc(s.strength)}</p></div>
+      <div class="detail-section"><h3>Weakness</h3><p>${esc(s.weakness)}</p></div>
+
+      <div class="detail-section"><h3>Stats</h3>${statsHtml}</div>
+      ${traitsHtml ? `<div class="detail-section"><h3>Traits</h3>${traitsHtml}</div>` : ''}
+    `;
+    document.getElementById('detail').classList.add('visible');
+  } catch(e) {
+    document.getElementById('detail').innerHTML = `<p style="color:#c44;">Error: ${esc(e.message)}</p>`;
+  }
+}
+
+function showAddForm() {
+  document.getElementById('add-form').classList.add('visible');
+  document.getElementById('detail').classList.remove('visible');
+}
+
+function hideAddForm() {
+  document.getElementById('add-form').classList.remove('visible');
+}
+
+async function submitStudent(e) {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const body = {
+    name: fd.get('name'), year: fd.get('year'),
+    hook: fd.get('hook'), background: fd.get('background'),
+    motivation: fd.get('motivation'), fear: fd.get('fear'),
+    demeanor: fd.get('demeanor'), strength: fd.get('strength'), weakness: fd.get('weakness'),
+  };
+
+  try {
+    const res = await fetch('/api/students', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    toast(`✅ ${data.name} added!`);
+    hideAddForm();
+    e.target.reset();
+    loadStudents();
+  } catch(err) {
+    toast('❌ ' + err.message, true);
+  }
+}
+
+function toast(msg, isErr) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (isErr ? ' error' : '') + ' show';
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function esc(s) {
+  if (!s) return '';
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+loadStudents();
+</script>
+</body>
+</html>
