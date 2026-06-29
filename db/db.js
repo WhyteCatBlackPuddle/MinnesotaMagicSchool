@@ -1,16 +1,17 @@
 import pg from 'pg';
 import dotenv from 'dotenv';
-import { readFileSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
 
 dotenv.config();
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
 const { Pool } = pg;
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL || 'postgresql://localhost:5432/magic_school',
+  ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
+});
+
+pool.on('error', (err) => {
+  console.error('Postgres pool error:', err.message);
 });
 
 export async function query(text, params) {
