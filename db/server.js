@@ -165,6 +165,11 @@ app.delete('/api/students/:id', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`🧙 Magic School DB → http://localhost:${PORT}`);
-});
+export default app;
+
+const isVercel = !!process.env.VERCEL;
+if (!isVercel) {
+  app.listen(PORT, () => {
+    console.log(`🧙 Magic School DB → http://localhost:${PORT}`);
+  });
+}
