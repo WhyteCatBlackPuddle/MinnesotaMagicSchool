@@ -758,6 +758,59 @@
     .stat-row { grid-template-columns: 78px minmax(0, 1fr) 36px; }
   }
 
+  /* ── Faculty view ── */
+  .faculty-card {
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.72);
+    cursor: pointer;
+    transition: transform 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
+  }
+  .faculty-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(31, 111, 120, 0.3);
+    box-shadow: var(--soft-shadow);
+  }
+  .faculty-card.selected {
+    border-color: rgba(31, 111, 120, 0.45);
+    background: linear-gradient(135deg, rgba(234, 245, 241, 0.96), rgba(255, 248, 227, 0.88));
+  }
+  .faculty-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin-bottom: 8px;
+    border-radius: 9px;
+    background: linear-gradient(135deg, var(--berry), var(--gold));
+    color: var(--white);
+    font-weight: 900;
+    font-size: 0.8rem;
+  }
+  .faculty-name {
+    color: var(--ink);
+    font-weight: 850;
+    font-size: 0.95rem;
+    letter-spacing: -0.03em;
+  }
+  .faculty-title {
+    display: inline-block;
+    margin-top: 3px;
+    color: var(--berry);
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .faculty-hook {
+    margin-top: 7px;
+    color: var(--muted);
+    font-size: 0.84rem;
+    line-height: 1.45;
+  }
+
   /* ── Campus view ── */
   .campus-intro {
     margin-bottom: 20px;
@@ -771,7 +824,7 @@
   }
   .campus-layout {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(320px, 400px);
+    grid-template-columns: minmax(0, 1fr) minmax(420px, 520px);
     gap: 20px;
     align-items: start;
   }
@@ -914,6 +967,7 @@
   <nav class="tab-nav">
     <button class="tab-btn active" data-tab="students">Students</button>
     <button class="tab-btn" data-tab="campus">Campus</button>
+    <button class="tab-btn" data-tab="faculty">Faculty</button>
   </nav>
 
   <div id="tab-students" class="tab-content active">
@@ -1026,6 +1080,18 @@
       <div class="campus-map" id="campus-map"></div>
       <aside class="campus-detail" id="campus-detail">
         <div class="detail-placeholder"><strong>Select a location</strong>Click a place on the map to read about it.</div>
+      </aside>
+    </div>
+  </div>
+
+  <div id="tab-faculty" class="tab-content">
+    <div class="campus-intro">
+      The faculty of Boundary Waters Academy are scholars, craftspeople, and village folk — some have been here longer than the buildings, and at least one may not be entirely human. Click a card to see the full profile, stats, and traits.
+    </div>
+    <div class="campus-layout">
+      <div class="campus-map" id="faculty-map"></div>
+      <aside class="campus-detail" id="faculty-detail">
+        <div class="detail-placeholder"><strong>Select a faculty member</strong>Click a card to read their full profile, stats, and traits.</div>
       </aside>
     </div>
   </div>
@@ -1425,6 +1491,115 @@ function closeCampusDetail() {
   renderCampusMap();
 }
 
+// ── Faculty tab ──
+
+let faculty = [];
+let selectedFacultySlug = null;
+let facultyLoaded = false;
+
+async function loadFaculty() {
+  try {
+    const res = await fetch('/api/faculty');
+    if (!res.ok) throw new Error('Could not load faculty');
+    faculty = await res.json();
+    facultyLoaded = true;
+  } catch (err) {
+    console.error(err);
+    faculty = [];
+  }
+}
+
+async function ensureFaculty() {
+  if (!facultyLoaded) await loadFaculty();
+}
+
+function renderFacultyMap() {
+  const map = document.getElementById('faculty-map');
+  if (!map) return;
+  if (!faculty.length) {
+    map.innerHTML = '<div class="empty-state">Loading faculty...</div>';
+    return;
+  }
+  map.innerHTML = faculty.map(f => `
+    <div class="faculty-card ${selectedFacultySlug === f.slug ? 'selected' : ''}" data-faculty="${f.slug}">
+      <div class="faculty-avatar">${esc(initials(f.name))}</div>
+      <div class="faculty-name">${esc(f.name)}</div>
+      <div class="faculty-title">${esc(f.title)}</div>
+      <div class="faculty-hook">${esc(truncate(f.hook, 140))}</div>
+    </div>
+  `).join('');
+}
+
+function showFacultyDetail(slug) {
+  selectedFacultySlug = slug;
+  renderFacultyMap();
+  const detail = document.getElementById('faculty-detail');
+  detail.innerHTML = '<div class="detail-placeholder"><strong>Loading profile...</strong></div>';
+
+  fetch('/api/faculty/' + slug)
+    .then(res => res.json())
+    .then(f => {
+      if (f.error) throw new Error(f.error);
+      renderFacultyProfile(f);
+    })
+    .catch(err => {
+      detail.innerHTML = `<div class="detail-placeholder"><strong>Error</strong>${esc(err.message)}</div>`;
+    });
+}
+
+function renderFacultyProfile(f) {
+  const statsHtml = STATS.map(stat => statBarHtml(stat, numeric(f[stat]))).join('');
+  const traits = Array.isArray(f.traits) ? f.traits : [];
+  const traitsHtml = traits.length
+    ? traits.map(t => `<div class="trait-card"><div class="trait-name">${esc(t.name)}</div><div class="trait-effect">${esc(t.effect)}</div></div>`).join('')
+    : '<span class="empty-chip">Traits pending</span>';
+
+  const detail = document.getElementById('faculty-detail');
+  detail.classList.add('has-selection');
+  detail.innerHTML = `
+    <button class="modal-close-btn faculty-close-btn" aria-label="Close" style="position:absolute;top:14px;right:14px;display:flex;">&times;</button>
+    <div class="profile-hero" style="border-bottom:0;padding:0 0 18px 0;">
+      <div class="profile-heading">
+        <div class="faculty-avatar" style="width:74px;height:74px;font-size:1.5rem;border-radius:24px;">${esc(initials(f.name))}</div>
+        <div>
+          <span class="detail-cat" style="margin-bottom:6px;">${esc(f.title)}</span>
+          <h2 style="font-size:2rem;">${esc(f.name)}</h2>
+        </div>
+      </div>
+      <p class="profile-hook">${esc(f.hook)}</p>
+    </div>
+    <div style="padding:0;">
+      <div class="story-grid">
+        ${storyCard('Background', f.background, 'Origins, training, and how they came to the academy.')}
+        ${storyCard('Motivation', f.motivation)}
+        ${storyCard('Fear', f.fear)}
+        ${storyCard('Demeanor', f.demeanor)}
+        ${storyCard('Strength', f.strength)}
+        ${storyCard('Weakness', f.weakness)}
+      </div>
+      <div class="story-grid" style="margin-top:12px;">
+        <div class="stats-card"><h3>Stats</h3>${statsHtml}</div>
+        <div class="traits-card"><h3>Traits</h3><div class="trait-list">${traitsHtml}</div></div>
+      </div>
+    </div>`;
+  detail.querySelector('.faculty-close-btn')?.addEventListener('click', closeFacultyDetail);
+}
+
+function closeFacultyDetail() {
+  selectedFacultySlug = null;
+  const detail = document.getElementById('faculty-detail');
+  detail.classList.remove('has-selection');
+  detail.innerHTML =
+    '<div class="detail-placeholder"><strong>Select a faculty member</strong>Click a card to read their full profile, stats, and traits.</div>';
+  renderFacultyMap();
+}
+
+// Faculty card click handler
+document.getElementById('faculty-map')?.addEventListener('click', event => {
+  const card = event.target.closest('.faculty-card');
+  if (card) showFacultyDetail(card.dataset.faculty);
+});
+
 // Tab switching
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', async () => {
@@ -1442,6 +1617,15 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
       detail.classList.remove('has-selection');
       detail.innerHTML =
         '<div class="detail-placeholder"><strong>Select a location</strong>Click a place on the map to read about it.</div>';
+    }
+    if (tab === 'faculty') {
+      if (!facultyLoaded) await loadFaculty();
+      selectedFacultySlug = null;
+      const detail = document.getElementById('faculty-detail');
+      detail.classList.remove('has-selection');
+      detail.innerHTML =
+        '<div class="detail-placeholder"><strong>Select a faculty member</strong>Click a card to read their full profile, stats, and traits.</div>';
+      renderFacultyMap();
     }
   });
 });

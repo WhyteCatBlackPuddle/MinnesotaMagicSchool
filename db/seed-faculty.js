@@ -1,0 +1,287 @@
+import pool from './db.js';
+
+const faculty = [
+  {
+    slug: 'margrethe-voss',
+    name: 'Margrethe Voss',
+    title: 'Headmistress',
+    department: 'Administration',
+    species: 'human',
+    hook: 'Headmistress Voss has run Boundary Waters Academy for thirty-one years. She knows every student by name by the end of the first week — not as a parlor trick, but as a discipline.',
+    background: 'Born in a fishing village on the North Shore of Lake Superior, the daughter of a ship captain and a midwife. She arrived at the academy as a first-year in a hand-me-down coat and a chip on her shoulder the size of a schooner. She was nobody\'s pick to lead anything. She outlasted everyone.',
+    motivation: 'To keep the school true to what it was built for — not prestige, not the old families, but the kid who shows up alone in a bad coat with something they don\'t yet understand burning behind their ribs.',
+    fear: 'That the school will calcify into an institution. That the old families will turn it into a credential rather than a calling. That she\'ll miss the moment it tips.',
+    demeanor: 'She moves through the Great Lodge like she owns it but has never said so. Her voice carries without being raised — some trick of breath or presence. She laughs easily and listens harder than anyone expects. Students who are summoned to her office expecting a scolding often leave having told her things they didn\'t know they needed to say.',
+    strength: 'Absolute clarity about what matters. She can walk into a room of arguing faculty, listen for three minutes, and name the real conflict nobody was saying out loud.',
+    weakness: 'She has been doing this too long to remember how to stop. The school is her life in a way that is not entirely healthy. She has no one to go home to, and on some winter nights that matters more than others.',
+    courage: 8, wit: 9, heart: 9, discipline: 9,
+    arcana: 7, perception: 10, resilience: 10, cunning: 8,
+    traits: [
+      { name: 'Every Name, Every Year', effect: 'Advantage on Perception rolls involving people — she catches what others miss. Cannot be surprised by a student\'s behavior; she already knew.' },
+      { name: 'The Long View', effect: 'Advantage on Discipline and Resilience rolls involving institutional decisions. Disadvantage on rolls requiring her to prioritize herself over the school.' },
+      { name: 'Voice Like a Bell', effect: 'Her authority is quiet. Ignoring her requires a contested Heart roll, and most people lose it without knowing they were in one.' }
+    ],
+    location_slug: 'great-lodge'
+  },
+  {
+    slug: 'elara-ironwood',
+    name: 'Elara Ironwood',
+    title: 'Professor of Arcana',
+    department: 'Arcana',
+    species: 'human',
+    hook: 'Professor Ironwood is the reason half the school is afraid of the arcana wing and the other half won\'t leave it. She is not cruel — she is precise, and precision can feel the same to someone who is not ready.',
+    background: 'Raised in a magical family in Stockholm, educated at institutions that do not appear on any map. She was recruited to Boundary Waters after a decade of research that the European academies found too practical. She came for the lake. The deep part, specifically.',
+    motivation: 'To understand what magic actually is — not the formulas and incantations, but the thing underneath. She believes the boundary between magic and physics is thinner than anyone admits, and she is trying to map it.',
+    fear: 'That she is wrong. That after forty years of study, the thing she is chasing does not exist, or worse — exists and does not want to be found.',
+    demeanor: 'Intense without being loud. She asks questions that feel like they have right answers, and she waits. Students who bring her honest confusion earn her respect faster than students who bring her polished work. She rarely smiles, but when she does it transforms her face. Her office hours are packed despite her reputation.',
+    strength: 'Can explain the unexplainable without dumbing it down. Students who struggle with arcana but keep showing up often have a breakthrough in their third year, and it is usually her.',
+    weakness: 'She does not know how to be wrong gracefully. When a student challenges a core assumption, her first instinct is defense, not curiosity. She is working on it. She is not good at it yet.',
+    courage: 6, wit: 10, heart: 5, discipline: 10,
+    arcana: 10, perception: 8, resilience: 7, cunning: 6,
+    traits: [
+      { name: 'The Deeper Question', effect: 'Advantage on Arcana rolls involving theory or fundamental principles. Disadvantage on Heart rolls with students who are struggling emotionally rather than intellectually.' },
+      { name: 'Unmapped Territory', effect: 'When investigating genuinely unknown magical phenomena, she gets a bonus on Wit and Arcana. When the phenomenon resists classification, she becomes frustrated and takes a Discipline penalty.' },
+      { name: 'Respect Through Rigor', effect: 'Students must succeed on a contested Wit roll to impress her. Those who do earn a mentor who will go to the wall for them.' }
+    ],
+    location_slug: 'library'
+  },
+  {
+    slug: 'sigrid-lunden',
+    name: 'Sigrid Lunden',
+    title: 'Professor of Herbology & Healing',
+    department: 'Herbology',
+    species: 'human',
+    hook: 'Professor Lunden is the faculty member students actually tell things to. Not because she asks — because she is the only adult in the building who seems like she already knows and is just waiting for you to catch up.',
+    background: 'Grew up on a farm near Mora, Minnesota — Swedish grandparents, a mother who was the county\'s unofficial herbalist, a father who taught her to read weather in the behavior of livestock. She was identified late, at fifteen, when a boy broke his arm falling out of a hayloft and she set it without touching him.',
+    motivation: 'To teach students that healing is not just fixing what is broken — it is knowing what needs to be broken to grow. She believes the line between medicine and magic is a fiction invented by people who only practiced one.',
+    fear: 'Losing a student. She has been teaching for eighteen years and has not lost one yet. The odds are not in her favor forever.',
+    demeanor: 'Sigrid is warm in a way that does not feel performative. She laughs at herself, swears in Swedish when she drops things, and keeps a kettle going in the greenhouse. Students who are crying in her office will find a mug of something hot in their hands without remembering how it got there.',
+    strength: 'A diagnostic intuition that borders on prescience. She can look at a sick plant or a sick student and name what is wrong before any test confirms it.',
+    weakness: 'She takes on too much. Every struggling student becomes her project. Every blight in the greenhouse keeps her up at night. She runs on tea and conviction and occasionally collapses for fourteen hours.',
+    courage: 6, wit: 8, heart: 10, discipline: 7,
+    arcana: 8, perception: 9, resilience: 8, cunning: 5,
+    traits: [
+      { name: 'The Kettle Is Always On', effect: 'Advantage on Heart rolls with anyone who is upset, scared, or in pain. Her presence is a natural Calm spell.' },
+      { name: 'Diagnostic Sight', effect: 'Advantage on Perception rolls to identify illness, injury, blight, or magical contamination in living things.' },
+      { name: 'Cannot Say No', effect: 'Once she commits to helping someone, she cannot abandon them. Resilience rolls to keep going past her limits succeed automatically — but at the cost of her own health.' }
+    ],
+    location_slug: 'gardens'
+  },
+  {
+    slug: 'torben-hall',
+    name: 'Torben Hall',
+    title: 'Workshop Master',
+    department: 'Craft',
+    species: 'human',
+    hook: 'Master Hall spends more time with a chisel in his hand than a wand. He teaches that making something with your hands is its own kind of spell, and the students who fail arcana often find themselves in his workshop, discovering they were never failing at all.',
+    background: 'Third-generation woodworker from Grand Marais. His grandfather built boats. His father built furniture. Torben built a door that opened onto a forest that was not the one outside his shop, and that is how the academy found him. He was twenty-eight and had never cast a formal spell in his life.',
+    motivation: 'To prove that craft is not lesser magic. That intention, patience, and the willingness to sand something for three hours are as legitimate as any incantation.',
+    fear: 'That the arcana department will eventually relegate his program to an elective. That the school will forget that the first magic was a handprint on a cave wall.',
+    demeanor: 'Quiet, patient, extremely large. He speaks slowly because he is thinking, not because he is slow. His hands are scarred in ways he does not explain. He calls every student by their first name from day one, and he never forgets one.',
+    strength: 'Can make anything. Wood, metal, stone, fiber — he has mastered them all. His workshop is a masterclass in the magic of attention.',
+    weakness: 'He is terrible at advocating for himself. He will let the arcana professors dominate faculty meetings without saying a word, then spend the evening planing a board into perfect flatness.',
+    courage: 7, wit: 7, heart: 8, discipline: 10,
+    arcana: 5, perception: 8, resilience: 9, cunning: 4,
+    traits: [
+      { name: 'Hands Know First', effect: 'Advantage on any roll involving making, repairing, or crafting. His hands understand before his mind does.' },
+      { name: 'Silence in Meetings', effect: 'Disadvantage on social rolls involving self-advocacy or institutional politics. He will not fight for his program in words.' },
+      { name: 'The Workshop Remembers', effect: 'Anything made in his workshop carries a subtle enchantment — tools stay sharper, joints stay tighter. The room itself has absorbed decades of focused intention.' }
+    ],
+    location_slug: 'workshop'
+  },
+  {
+    slug: 'marta-koivu',
+    name: 'Marta Koivu',
+    title: 'Water-Sense Instructor',
+    department: 'Water',
+    species: 'human',
+    hook: 'Marta has been the boathouse keeper longer than anyone can verify. She teaches water-sense — the subtle magic of reading currents, weather, and what lives beneath the surface — and she smells like lake water year-round, even in February.',
+    background: 'The village records show a Koivu family living here since the school was founded, but the details are inconsistent. Marta appears in photographs going back seventy years looking exactly the same. When asked, she says she has always been here. Nobody presses the point.',
+    motivation: 'To make sure every student who leaves this school respects the water. Not fears it — respects it. The lake is not a threat, but it is not a playground either.',
+    fear: 'She does not speak about the deep part of the lake. When students ask, she changes the subject. The one time a faculty member pressed her, she looked at them with an expression that ended the conversation permanently.',
+    demeanor: 'Weathered, unflappable, deeply kind in a way that does not require warmth. She speaks in short sentences that land like stones in still water — ripples spread long after she has moved on. Students find her intimidating for the first month and indispensable by the second.',
+    strength: 'Complete authority on the water. She can read a storm two hours out, find a channel in the dark, and name every fish in the lake by the way it breaks the surface.',
+    weakness: 'She will not go inland. She has not left the lakeshore in decades. When the faculty retreat was held in the Old Pines, she sent her regrets and would not explain why.',
+    courage: 8, wit: 7, heart: 8, discipline: 9,
+    arcana: 7, perception: 10, resilience: 10, cunning: 7,
+    traits: [
+      { name: 'The Lake Knows Her', effect: 'Advantage on any Perception or Water-sense roll on or near Mirror Lake. The water tells her things it tells no one else.' },
+      { name: 'Shorebound', effect: 'Cannot voluntarily travel more than a mile from the lakeshore. If forced, she takes a penalty on all rolls until she returns.' },
+      { name: 'Still Water Advice', effect: 'When she gives counsel, the recipient gets advantage on their next Wisdom-equivalent roll. She only gives counsel when asked.' }
+    ],
+    location_slug: 'boathouse'
+  },
+  {
+    slug: 'skafti-haraldsson',
+    name: 'Skafti Haraldsson',
+    title: 'Wilderness Instructor',
+    department: 'Wilderness',
+    species: 'human',
+    hook: 'Skafti spends more nights in the Old Pines than in his own cabin. He teaches winter survival, navigation, and the unspoken rules of the forest — including the one about not wandering off the marked paths after dark.',
+    background: 'Born in Iceland, raised in northern Minnesota by parents who believed that if you could not start a fire in the rain you were not a person. He was identified by the academy at nineteen after walking out of a blizzard that should have killed him, carrying a injured hiker on his back.',
+    motivation: 'To teach students that the wilderness is not the enemy — it is the oldest teacher. Everything else is just classrooms with better roofs.',
+    fear: 'That the school is getting soft. That in another generation, students will arrive who have never slept outside, never been cold, never been lost and found their way back.',
+    demeanor: 'Borderline feral. He blinks less than normal people. He is most comfortable when the temperature is below freezing and the wind is up. Students who earn his respect do so by being competent, not by being charming. He is surprisingly gentle with students who are genuinely scared.',
+    strength: 'Unbreakable in extreme conditions. Cold, hunger, exhaustion — he has trained past all of them. He can navigate by stars, moss, wind, and something he calls "the feel of the land."',
+    weakness: 'He has almost no patience for indoor life. Faculty meetings, paperwork, lesson plans — he treats them like a personal insult. His administrative skills are nonexistent.',
+    courage: 10, wit: 6, heart: 5, discipline: 8,
+    arcana: 5, perception: 9, resilience: 10, cunning: 7,
+    traits: [
+      { name: 'Born for the Cold', effect: 'Advantage on all Resilience and Survival rolls in cold, snow, or wilderness conditions. Penalties for extreme cold are halved.' },
+      { name: 'Indoor Penalty', effect: 'Disadvantage on social and administrative rolls conducted indoors. In a faculty meeting, he is counting the minutes until he can leave.' },
+      { name: 'The Forest Remembers Him', effect: 'The Old Pines treat him as a known presence. He can move through the deep woods without announcing himself — and without consequence.' }
+    ],
+    location_slug: 'old-pines'
+  },
+  {
+    slug: 'the-librarian',
+    name: 'Yrsa',
+    title: 'Librarian',
+    department: 'Archives',
+    species: 'lynx (maybe)',
+    hook: 'The librarian is a topic of ongoing debate: some say she is a woman who can take the form of a lynx. Others say she is a lynx who learned to take the form of a woman. Either way, she knows where every book is, and she does not tolerate overdue returns.',
+    background: 'No records exist of Yrsa being hired. She appears in the earliest photographs of the library, standing in the background, slightly out of focus. When asked directly, she says she came with the books. The oldest books in the collection predate the school by centuries.',
+    motivation: 'To protect the collection. Not just the books — the maps, the letters, the marginalia, the pressed leaves tucked between pages, the stains that might be tea or might be blood. Every mark is a record.',
+    fear: 'Fire. She will not say the word aloud. The library has never had a fireplace, which is remarkable for a building in northern Minnesota.',
+    demeanor: 'Yrsa moves silently regardless of footwear or floor surface. Her hands are always gentle with paper. She rarely offers information unprompted, but when asked the right question she can find anything. Students who return books late find her standing behind them without having heard her approach. She has never raised her voice, but she has never needed to.',
+    strength: 'Total knowledge of her domain. She can tell you not only where a book is but who last read it, what page they dog-eared, and what they were looking for.',
+    weakness: 'She is bound to the library. Leaving it causes her visible distress, and she cannot stay away for more than a few hours. The reason is one of the questions nobody has quite asked her directly.',
+    courage: 5, wit: 10, heart: 6, discipline: 10,
+    arcana: 9, perception: 10, resilience: 8, cunning: 8,
+    traits: [
+      { name: 'The Collection Remembers', effect: 'Within the library, she has advantage on any roll involving knowledge, research, or finding things. The library is an extension of her memory.' },
+      { name: 'Bound to the Shelves', effect: 'Cannot leave the library grounds for more than four hours at a time. If forced beyond that, she takes escalating penalties to all stats.' },
+      { name: 'Unseen Approach', effect: 'Advantage on any roll involving stealth or going unnoticed. She appears behind people who have not returned their books.' }
+    ],
+    location_slug: 'library'
+  },
+  {
+    slug: 'hugo-thorne',
+    name: 'Hugo Thorne',
+    title: 'Professor of Lore & History',
+    department: 'Lore',
+    species: 'human',
+    hook: 'Professor Thorne teaches the history of the school, the village, and the old magic that was here before either. His lectures are standing-room-only, not because the material is on the exam but because he tells stories like someone who was there.',
+    background: 'Born in the village. His grandmother was one of the first students at the academy. His father was the groundskeeper. Hugo left for twenty years — traveled, studied, taught at universities that exist in the normal world — and then came back. He says the lake called him. He says it like he means it literally.',
+    motivation: 'To make sure the school remembers itself. Institutions forget. He is the memory.',
+    fear: 'That the stories will die with him. He has no children, no apprentices. Every year he tells the first-years the story of how the school was founded, and every year he wonders if this is the year nobody really listens.',
+    demeanor: 'Warm, theatrical, a natural performer who is not performing. He gestures when he talks, paces, laughs at his own digressions. Students who sit in the back and try to be invisible find him impossible to ignore. He is the keeper of the Great Lodge hearth — literally. He is the one who tends it.',
+    strength: 'A storyteller\'s memory — names, dates, lineages, feuds, the exact wording of a treaty signed in 1847 — all of it is in his head and it all connects.',
+    weakness: 'He lives in the past more than he admits. He is better at telling the school\'s story than at shaping its future. When decisions need to be made about where the school is going, he defers to tradition with a reverence that sometimes masks avoidance.',
+    courage: 5, wit: 9, heart: 9, discipline: 7,
+    arcana: 6, perception: 8, resilience: 7, cunning: 6,
+    traits: [
+      { name: 'Keeper of the Hearth', effect: 'While tending the Great Lodge fire, he can tell a story that grants listeners advantage on their next roll — once per gathering.' },
+      { name: 'Living Archive', effect: 'Advantage on any roll involving the history of the school, the village, or the old magic. Disadvantage on rolls requiring him to act on that knowledge rather than recount it.' },
+      { name: 'The Lake Called Him Back', effect: 'Cannot permanently leave the academy. He tried once. The pull is not magical compulsion — it is something closer to homesickness of the soul.' }
+    ],
+    location_slug: 'great-lodge'
+  },
+  {
+    slug: 'anni-hokkanen',
+    name: 'Anni Hokkanen',
+    title: 'Kitchen Head',
+    department: 'Village',
+    species: 'human',
+    hook: 'Anni runs the kitchen with the authority of someone who has been feeding this school since before most of the faculty were hired. She knows every dietary restriction by the end of the first week, and she knows which students are not eating enough by the end of the second.',
+    background: 'Born in the village, raised in the kitchen. Her mother ran it before her, and her grandmother before that. The Hokkanens have been feeding this school for four generations. Anni was offered a place as a student but turned it down — she said she was already where she needed to be.',
+    motivation: 'To feed people. Not metaphorically. She believes a hot meal at the right moment can change the course of a day, a semester, a life.',
+    fear: 'That someday the school will hire an outside catering company. That feeding three hundred students will become a contract instead of a calling.',
+    demeanor: 'Loud, warm, physically incapable of sitting down while anyone else is standing. She hums while she works — old Finnish songs her grandmother taught her. She will feed anyone who walks into her kitchen at any hour. The soup pot is rumored to be enchanted; she will neither confirm nor deny.',
+    strength: 'Logistical genius. She can plan a menu for three hundred people across four seasons with a budget that makes no sense on paper and always comes out even.',
+    weakness: 'She cannot delegate the emotional labor. Every student who is struggling becomes someone she worries about. She carries the weight of the whole school\'s well-being and occasionally buckles under it.',
+    courage: 7, wit: 6, heart: 10, discipline: 9,
+    arcana: 3, perception: 9, resilience: 9, cunning: 7,
+    traits: [
+      { name: 'The Soup Pot', effect: 'Once per day, she can produce a meal that heals 1 point of exhaustion and grants a temporary Heart bonus to whoever eats it. She does not call this magic.' },
+      { name: 'I Know Who Is Not Eating', effect: 'Advantage on Perception rolls to identify students who are struggling, sick, or hiding something. She sees what the faculty misses.' },
+      { name: 'Four Generations of Kitchen Wit', effect: 'Advantage on any roll involving food, cooking, or kitchen logistics. Her recipes are half measurement and half intuition.' }
+    ],
+    location_slug: 'kitchen'
+  },
+  {
+    slug: 'lempi-hokkanen',
+    name: 'Lempi Hokkanen',
+    title: 'Trading Post Keeper',
+    department: 'Village',
+    species: 'human',
+    hook: 'Lempi is Anni\'s older sister and the keeper of the Trading Post, which means she is also the post office, the message board, and the primary vector for gossip in a thirty-mile radius.',
+    background: 'The Hokkanen family has run the Trading Post for three generations. Lempi took it over at twenty-two when their father retired to fish full-time. She has never wanted to do anything else. She knows every student by what they buy — the homesick ones buy stamps, the lovesick ones buy candles, the ones in trouble buy rope and don\'t explain why.',
+    motivation: 'To keep the village connected to the outside world without letting the outside world change the village. It is a harder balance than it sounds.',
+    fear: 'That the village will become a tourist destination. That someone will put it on a map. That the quiet will be loved to death.',
+    demeanor: 'Sharp, funny, constitutionally incapable of pretending to like someone she doesn\'t. She has a running mental catalogue of who owes what and who said what about whom. She is also the person you go to when you genuinely need something you cannot find — because she knows people, and people owe her favors in quantities that suggest a second ledger.',
+    strength: 'Network. She knows someone who knows someone for everything. If it exists, she can get it. If it does not exist, she knows someone who can make it.',
+    weakness: 'She knows too much. Secrets accumulate on her like snow on a roof — eventually something has to give. She has kept confidences she should have broken and revealed things she should have kept.',
+    courage: 6, wit: 8, heart: 7, discipline: 6,
+    arcana: 4, perception: 9, resilience: 7, cunning: 9,
+    traits: [
+      { name: 'The Second Ledger', effect: 'Advantage on rolls involving barter, favors, or acquiring hard-to-find items. Someone, somewhere, owes her.' },
+      { name: 'I Know What You Bought', effect: 'Advantage on Perception rolls to read people based on their purchases, habits, and mail patterns. She can profile a student in a week.' },
+      { name: 'Too Many Secrets', effect: 'Disadvantage on Heart rolls involving trust. She has been burned by knowing things she should not have known, and she is more guarded than she appears.' }
+    ],
+    location_slug: 'trading-post'
+  },
+  {
+    slug: 'oskar-linden',
+    name: 'Oskar Lindén',
+    title: 'Groundskeeper & Garden Master',
+    department: 'Village',
+    species: 'human',
+    hook: 'Oskar has been the groundskeeper for forty-two years. He knows every tree on the property by the sound of its leaves in a specific wind. He works alongside Sigrid in the gardens, and the two of them have an understanding that does not require much talking.',
+    background: 'Born in the village, the son of a trapper and a weaver. He started working the grounds at sixteen and never left. He was drafted into the military at eighteen, served two years, and came back to the academy the same day he was discharged. He has not left since.',
+    motivation: 'To leave the grounds better than he found them. He measures this in soil health, in the return of a bird species that had been gone for a decade, in the way the apple orchard on the south slope produced twice as much last year as the year before.',
+    fear: 'That he will outlive his body. His knees are going. His back has been talking to him for years. The day he cannot walk the full perimeter is the day he stops being himself.',
+    demeanor: 'Quiet, steady, the kind of man who answers a question five seconds after you ask it because he was finishing the thought. He talks to plants and means it. He has a dry sense of humor that students discover by accident, usually in their third year.',
+    strength: 'Deep, intuitive understanding of growing things. He can look at a patch of soil and tell you what it needs — not through magic but through forty-two years of paying attention.',
+    weakness: 'He cannot say no to the school. He has been asked to retire twice and both times he simply did not. The grounds are his life\'s work and he has no life outside them.',
+    courage: 5, wit: 6, heart: 8, discipline: 10,
+    arcana: 4, perception: 9, resilience: 9, cunning: 5,
+    traits: [
+      { name: 'The Grounds Remember', effect: 'Advantage on any roll involving plants, soil, weather, or the cultivated land of the academy. Forty-two years of attention is its own kind of magic.' },
+      { name: 'Talks to Plants', effect: 'Can communicate basic information with any plant on the grounds — not in words, but in impressions. He knows when a tree is sick before the leaves show it.' },
+      { name: 'Cannot Retire', effect: 'Advantage on Resilience rolls to keep working past his limits. The grounds are his purpose, and purpose is a better painkiller than anything in the apothecary.' }
+    ],
+    location_slug: 'gardens'
+  }
+];
+
+async function seed() {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    for (const f of faculty) {
+      const result = await client.query(
+        `INSERT INTO faculty (name, slug, title, department, species, hook, background, motivation, fear, demeanor, strength, weakness,
+          courage, wit, heart, discipline, arcana, perception, resilience, cunning, traits, location_slug)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22)
+         ON CONFLICT (slug) DO UPDATE SET
+           name=EXCLUDED.name, title=EXCLUDED.title, department=EXCLUDED.department, species=EXCLUDED.species,
+           hook=EXCLUDED.hook, background=EXCLUDED.background, motivation=EXCLUDED.motivation,
+           fear=EXCLUDED.fear, demeanor=EXCLUDED.demeanor, strength=EXCLUDED.strength, weakness=EXCLUDED.weakness,
+           courage=EXCLUDED.courage, wit=EXCLUDED.wit, heart=EXCLUDED.heart, discipline=EXCLUDED.discipline,
+           arcana=EXCLUDED.arcana, perception=EXCLUDED.perception, resilience=EXCLUDED.resilience, cunning=EXCLUDED.cunning,
+           traits=EXCLUDED.traits, location_slug=EXCLUDED.location_slug
+         RETURNING id, name`,
+        [f.name, f.slug, f.title, f.department, f.species, f.hook, f.background, f.motivation, f.fear, f.demeanor, f.strength, f.weakness,
+         f.courage, f.wit, f.heart, f.discipline, f.arcana, f.perception, f.resilience, f.cunning,
+         JSON.stringify(f.traits), f.location_slug]
+      );
+      if (result.rows.length > 0) {
+        console.log(`  ✅ ${result.rows[0].name} (${f.title})`);
+      }
+    }
+
+    await client.query('COMMIT');
+    console.log(`\n🎉 Seeded ${faculty.length} faculty.`);
+  } catch (err) {
+    await client.query('ROLLBACK');
+    console.error('❌ Seed failed:', err.message);
+    process.exit(1);
+  } finally {
+    client.release();
+    await pool.end();
+  }
+}
+
+seed();

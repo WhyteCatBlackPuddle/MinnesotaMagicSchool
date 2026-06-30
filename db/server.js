@@ -200,6 +200,34 @@ app.get('/api/health', async (_req, res) => {
   }
 });
 
+// ── Faculty ──
+
+const FACULTY_STATS = ['courage','wit','heart','discipline','arcana','perception','resilience','cunning'];
+const FACULTY_REQUIRED = ['name','slug','title','hook','background','motivation','fear','demeanor','strength','weakness'];
+
+// List all faculty
+app.get('/api/faculty', async (_req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT id, slug, name, title, department, species, hook, courage, wit, heart, discipline, arcana, perception, resilience, cunning, traits FROM faculty ORDER BY id'
+    );
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Get one faculty by slug
+app.get('/api/faculty/:slug', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM faculty WHERE slug = $1', [req.params.slug]);
+    if (result.rows.length === 0) return res.status(404).json({ error: 'Not found' });
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 export default app;
 
 const isVercel = !!process.env.VERCEL;
