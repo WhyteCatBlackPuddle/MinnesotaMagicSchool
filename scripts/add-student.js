@@ -1,5 +1,5 @@
 import readline from 'readline';
-import pool from './db.js';
+import pool from '../src/db.js';
 
 const rl = readline.createInterface({
   input: process.stdin,

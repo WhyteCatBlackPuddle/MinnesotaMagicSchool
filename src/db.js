@@ -1,7 +1,16 @@
 import pg from 'pg';
 import dotenv from 'dotenv';
+import { existsSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 
-dotenv.config();
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const projectRoot = join(__dirname, '..');
+
+dotenv.config({ path: join(projectRoot, '.env') });
+if (!process.env.DATABASE_URL && existsSync(join(projectRoot, 'db', '.env'))) {
+  dotenv.config({ path: join(projectRoot, 'db', '.env') });
+}
 
 const { Pool } = pg;
 

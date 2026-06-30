@@ -1,12 +1,4 @@
-import pg from 'pg';
-import dotenv from 'dotenv';
-dotenv.config();
-
-const { Pool } = pg;
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgresql://localhost:5432/magic_school',
-  ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
-});
+import pool from '../src/db.js';
 
 const locs = [
   {slug:'great-lodge', name:'The Great Lodge', category:'Building', icon:'🏛️', teaser:'The heart of campus — dining hall, gathering space, and the fireplace that never goes out.', description:'Built from red pine and local granite, the Great Lodge is where the entire school gathers for meals, announcements, and the winter festivals that keep spirits up when the lake freezes over. The central hearth burns year-round — nobody remembers it ever being lit, or ever going out. The rafters are carved with the names of every graduating class going back over a century.', sort:1},

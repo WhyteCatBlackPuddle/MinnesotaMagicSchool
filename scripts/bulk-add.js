@@ -1,5 +1,5 @@
 import { readFileSync } from 'fs';
-import pool from './db.js';
+import pool from '../src/db.js';
 
 const file = process.argv[2];
 if (!file) {

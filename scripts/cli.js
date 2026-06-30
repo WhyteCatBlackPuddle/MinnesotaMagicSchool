@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import pool from './db.js';
+import pool from '../src/db.js';
 
 const cmd = process.argv[2];
 const STATS = ['courage','wit','heart','discipline','arcana','perception','resilience','cunning'];

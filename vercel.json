@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd db && npm install",
+  "buildCommand": "npm install",
   "outputDirectory": ".",
   "rewrites": [
     { "source": "/(.*)", "destination": "/api/index" }

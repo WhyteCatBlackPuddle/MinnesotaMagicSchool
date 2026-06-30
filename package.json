@@ -4,5 +4,23 @@
   "type": "module",
   "engines": {
     "node": "22.x"
+  },
+  "scripts": {
+    "setup": "node scripts/setup.js",
+    "seed": "node scripts/seed.js",
+    "seed:faculty": "node scripts/seed-faculty.js",
+    "seed:locations": "node scripts/seed-locations.js",
+    "add": "node scripts/add-student.js",
+    "bulk-add": "node scripts/bulk-add.js",
+    "server": "node src/server.js",
+    "start": "node src/server.js",
+    "view": "node scripts/view-students.js",
+    "view-student": "node scripts/view-students.js",
+    "cli": "node scripts/cli.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.22.2",
+    "pg": "^8.13.0"
   }
 }

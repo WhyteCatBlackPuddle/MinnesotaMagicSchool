@@ -5,15 +5,17 @@ import { fileURLToPath } from 'url';
 import pool from './db.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+const publicDir = join(__dirname, '..', 'public');
 const app = express();
 const PORT = process.env.PORT || 3456;
 
 app.use(express.json());
+app.use(express.static(publicDir));
 
 // Serve the web UI
 app.get('/', (_req, res) => {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
-  res.send(readFileSync(join(__dirname, 'index.html'), 'utf-8'));
+  res.send(readFileSync(join(publicDir, 'index.html'), 'utf-8'));
 });
 
 // ── API ──
@@ -233,6 +235,6 @@ export default app;
 const isVercel = !!process.env.VERCEL;
 if (!isVercel) {
   app.listen(PORT, () => {
-    console.log(`🧙 Magic School DB → http://localhost:${PORT}`);
+    console.log(`🧙 Boundary Waters Academy → http://localhost:${PORT}`);
   });
 }
