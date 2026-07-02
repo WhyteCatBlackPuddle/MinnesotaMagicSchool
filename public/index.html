@@ -915,6 +915,38 @@
     font-size: 0.96rem;
     line-height: 1.62;
   }
+  .world-section-list {
+    display: grid;
+    gap: 14px;
+    margin-top: 18px;
+  }
+  .world-section-list h4 {
+    margin: 0;
+    color: var(--ink);
+    font-size: 0.95rem;
+    letter-spacing: -0.03em;
+  }
+  .world-section-list p {
+    margin: 6px 0 0;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .world-section-list ul {
+    margin: 8px 0 0;
+    padding-left: 20px;
+    color: var(--muted);
+    line-height: 1.58;
+  }
+  .world-section-list li + li { margin-top: 4px; }
+  .world-card-kicker {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--lake-dark);
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
   .campus-detail .detail-placeholder {
     color: var(--muted);
     text-align: center;
@@ -968,6 +1000,7 @@
     <button class="tab-btn active" data-tab="students">Students</button>
     <button class="tab-btn" data-tab="campus">Campus</button>
     <button class="tab-btn" data-tab="faculty">Faculty</button>
+    <button class="tab-btn" data-tab="world">World</button>
   </nav>
 
   <div id="tab-students" class="tab-content active">
@@ -1096,6 +1129,16 @@
     </div>
   </div>
 
+  <div id="tab-world" class="tab-content">
+    <div class="campus-intro">
+      Boundary Waters Academy is still being discovered. These notes capture the current canon for magic, school life, society, and the tone of the world we are building.
+    </div>
+    <div class="campus-layout">
+      <div class="campus-map" id="world-map"></div>
+      <aside class="campus-detail has-selection" id="world-detail"></aside>
+    </div>
+  </div>
+
 </div>
 
 <div class="toast" id="toast"></div>
@@ -1107,6 +1150,133 @@ const STAT_LABELS = {
   courage: 'Courage', wit: 'Wit', heart: 'Heart', discipline: 'Discipline',
   arcana: 'Arcana', perception: 'Perception', resilience: 'Resilience', cunning: 'Cunning'
 };
+
+const WORLD_SECTIONS = [
+  {
+    id: 'foundation',
+    title: 'World Foundation',
+    category: 'Core canon',
+    teaser: 'Boundary Waters Academy prepares magically-affined children for the wider magical world.',
+    sections: [
+      {
+        heading: 'Academy premise',
+        body: 'Boundary Waters Academy is a boarding school for magically-affined children, located in the north woods of Minnesota. Its setting is remote and nature-rich, but its curriculum prepares students for life in the wider magical world: cities, professions, households, governments, shops, hospitals, research, craft, defense, and community life.'
+      },
+      {
+        heading: 'Affinity and education',
+        body: 'Students arrive with raw or accidental magical affinity. The school teaches discipline, tools, theory, ethics, and practical spellwork so they can use magic safely and responsibly. Affinity is what magic does around you before you are trained. Education is what teaches you what to do with it.'
+      }
+    ]
+  },
+  {
+    id: 'magic-system',
+    title: 'Magic System',
+    category: 'How magic works',
+    teaser: 'Magic has rules, but it also appears naturally without manipulation.',
+    sections: [
+      {
+        heading: 'What magic is',
+        body: 'Magic is both mysterious and understandable. Magic has rules, but also appears naturally without manipulation.'
+      },
+      {
+        heading: 'Who can use it',
+        items: [
+          'Anyone that has magical affinity.',
+          'Some humans are born with innate ability through blood.',
+          'Some acquire it through contact with magical places, objects or other mysterious ways.',
+          'Magic by humans requires discipline, knowledge and skilled mentors.'
+        ]
+      },
+      {
+        heading: 'Danger',
+        body: 'People can be killed trying to use it.'
+      }
+    ]
+  },
+  {
+    id: 'school-institution',
+    title: 'School Institution',
+    category: 'Boundary Waters Academy',
+    teaser: 'A warm, rigorous, dangerous, and beloved school with a hidden defensive purpose.',
+    sections: [
+      {
+        heading: 'Founding',
+        body: 'The academy began as an academic study project founded by a coalition of magicians focused on mythical herbology, animal study, and a powerful source of magic shaping the region. The founder was warm, loving, kind, full of laughter, practical, powerful, and a huge presence.'
+      },
+      {
+        heading: 'Mission',
+        body: 'Boundary Waters Academy educates, trains, and grows the next generation of magic leaders of the Midwest. It serves many of the same purposes as a military school, but with much more warmth and humanity.'
+      },
+      {
+        heading: 'Structure',
+        items: [
+          'About 300 students attend across 8 years of schooling.',
+          'Everyone boards, often in cabins or lodges.',
+          'Late bloomers have a complicated relationship with the school and are usually socially outcast.',
+          'The adult-to-student ratio is small enough that students have real freedom.'
+        ]
+      }
+    ]
+  },
+  {
+    id: 'curriculum',
+    title: 'Curriculum',
+    category: 'Training',
+    teaser: 'Students learn practical magic, field skills, ethics, implements, and later career specializations.',
+    sections: [
+      {
+        heading: 'First-year core classes',
+        items: ['Introductory Spellwork', 'Wand and Implement Safety', 'Runes and Symbolic Enchantment', 'Magical Materials and Potions', 'Wards, Boundaries, and Protection', 'Magical History and Society', 'Ethics of Human Magic', 'Field Practicum', 'Affinity Observation']
+      },
+      {
+        heading: 'Later-year courses',
+        items: ['Defensive Spellwork', 'Advanced Enchantment', 'Practical Household Magic', 'Urban Magical Systems', 'Magical Craft and Repair', 'Healing Foundations', 'Translation of Ancient Texts', 'Magical Law and Civic Life', 'Creature Handling', 'Transportation and Communication Magic', 'Professional Apprenticeship', 'Environmental and Place-Based Magic']
+      }
+    ]
+  },
+  {
+    id: 'society',
+    title: 'Magical Society',
+    category: 'Wider world',
+    teaser: 'A practical parallel culture with cities, jobs, government, patron families, and secrecy.',
+    sections: [
+      {
+        heading: 'Parallel culture',
+        body: 'The broader magical world is practical, similar, and different. It has its own social networks, economy, governmental organizations, commerce, and class divisions.'
+      },
+      {
+        heading: 'Minnesota centers',
+        items: ['Duluth', 'Rochester', 'Minneapolis', 'St. Paul', 'Brainerd', 'Other large Minnesota cities with hidden magical cultures']
+      },
+      {
+        heading: 'Secrecy',
+        body: 'Magic is often right in front of non-magical people, but they dismiss it. The separation between worlds is stable but fraying at the edges, and what happened in the past was unjust and forced.'
+      }
+    ]
+  },
+  {
+    id: 'student-guidelines',
+    title: 'Student Guidelines',
+    category: 'Writing guardrails',
+    teaser: 'Students are beginners with affinities, not heroes with powers.',
+    sections: [
+      {
+        heading: 'Student guardrails',
+        items: [
+          'Students arrive with raw or accidental magical affinity.',
+          'Students can be special without being chosen ones.',
+          'Affinity should create problems before it creates competence.',
+          'Every student still needs ordinary magical education.',
+          'Magical ability should create social, emotional, ethical, or practical tension.'
+        ]
+      },
+      {
+        heading: 'Tone boundaries',
+        body: 'The story can be human, but should not be unnecessarily macabre. Emotional themes of the students should always be treated with tenderness rather than spectacle. When something frightening happens, warmth is restored by other characters caring, the hominess of the dorms, the comforting headmistress and staff, and warm things that welcome students back.'
+      }
+    ]
+  }
+];
 
 let students = [];
 let activeId = null;
@@ -1594,10 +1764,54 @@ function closeFacultyDetail() {
   renderFacultyMap();
 }
 
+let selectedWorldSection = WORLD_SECTIONS[0]?.id || null;
+
+function renderWorldMap() {
+  const map = document.getElementById('world-map');
+  if (!map) return;
+  map.innerHTML = WORLD_SECTIONS.map(section => `
+    <div class="location-card ${selectedWorldSection === section.id ? 'selected' : ''}" data-world-section="${section.id}">
+      <span class="world-card-kicker">${esc(section.category)}</span>
+      <div class="location-name">${esc(section.title)}</div>
+      <div class="location-teaser">${esc(section.teaser)}</div>
+    </div>
+  `).join('');
+}
+
+function sectionBlockHtml(section) {
+  const body = section.body ? `<p>${esc(section.body)}</p>` : '';
+  const items = section.items?.length
+    ? `<ul>${section.items.map(item => `<li>${esc(item)}</li>`).join('')}</ul>`
+    : '';
+  return `<article><h4>${esc(section.heading)}</h4>${body}${items}</article>`;
+}
+
+function showWorldDetail(id) {
+  selectedWorldSection = id;
+  const section = WORLD_SECTIONS.find(item => item.id === id) || WORLD_SECTIONS[0];
+  const detail = document.getElementById('world-detail');
+  if (!detail || !section) return;
+  detail.classList.add('has-selection');
+  detail.innerHTML = `
+    <h3>${esc(section.title)}</h3>
+    <span class="detail-cat">${esc(section.category)}</span>
+    <div class="detail-body">${esc(section.teaser)}</div>
+    <div class="world-section-list">
+      ${section.sections.map(sectionBlockHtml).join('')}
+    </div>
+  `;
+  renderWorldMap();
+}
+
 // Faculty card click handler
 document.getElementById('faculty-map')?.addEventListener('click', event => {
   const card = event.target.closest('.faculty-card');
   if (card) showFacultyDetail(card.dataset.faculty);
+});
+
+document.getElementById('world-map')?.addEventListener('click', event => {
+  const card = event.target.closest('.location-card');
+  if (card) showWorldDetail(card.dataset.worldSection);
 });
 
 // Tab switching
@@ -1626,6 +1840,11 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
       detail.innerHTML =
         '<div class="detail-placeholder"><strong>Select a faculty member</strong>Click a card to read their full profile, stats, and traits.</div>';
       renderFacultyMap();
+    }
+    if (tab === 'world') {
+      selectedWorldSection = selectedWorldSection || WORLD_SECTIONS[0]?.id || null;
+      renderWorldMap();
+      showWorldDetail(selectedWorldSection);
     }
   });
 });
