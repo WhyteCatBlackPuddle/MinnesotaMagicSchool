@@ -11,6 +11,7 @@ Affinity is what magic does around you before you are trained. Education is what
 - [School Curriculum](school-curriculum.md)
 - [Magical Society](magical-society.md)
 - [Student Guidelines](student-guidelines.md)
+- [Open Questions](open-questions.md)
 
 ## Core world assumptions
 
