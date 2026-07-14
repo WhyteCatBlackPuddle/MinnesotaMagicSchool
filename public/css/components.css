@@ -1,0 +1,53 @@
+.panel-close-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: flex;
+}
+
+.detail-icon-large {
+  width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+}
+
+.profile-hero-compact {
+  border-bottom: 0;
+  padding: 0 0 18px;
+}
+
+.faculty-detail-avatar {
+  width: 74px;
+  height: 74px;
+  font-size: 1.5rem;
+  border-radius: 24px;
+}
+
+.detail-cat-spaced {
+  margin-bottom: 6px;
+}
+
+.faculty-detail-name {
+  font-size: 2rem;
+}
+
+.detail-section-flush {
+  padding: 0;
+}
+
+.story-grid-spaced {
+  margin-top: 12px;
+}
+
+.stat-fill-value-0 { width: 0%; background: #8d3a45; }
+.stat-fill-value-1 { width: 10%; background: #8d3a45; }
+.stat-fill-value-2 { width: 20%; background: #8d3a45; }
+.stat-fill-value-3 { width: 30%; background: #ba6b35; }
+.stat-fill-value-4 { width: 40%; background: #ba6b35; }
+.stat-fill-value-5 { width: 50%; background: #c18b32; }
+.stat-fill-value-6 { width: 60%; background: #c18b32; }
+.stat-fill-value-7 { width: 70%; background: #2f7d4a; }
+.stat-fill-value-8 { width: 80%; background: #2f7d4a; }
+.stat-fill-value-9 { width: 90%; background: #1f6f78; }
+.stat-fill-value-10 { width: 100%; background: #1f6f78; }

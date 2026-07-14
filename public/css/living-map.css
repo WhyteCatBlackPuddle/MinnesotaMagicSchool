@@ -1,0 +1,33 @@
+.living-map-embed {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #0b1211;
+  box-shadow: var(--shadow);
+}
+
+.living-map-frame {
+  display: block;
+  width: 100%;
+  height: min(900px, calc(100vh - 90px));
+  min-height: 680px;
+  border: 0;
+  background: #0b1211;
+}
+
+.living-map-fallback {
+  margin: 0;
+  padding: 14px 18px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.living-map-fallback a {
+  color: var(--lake);
+}
+
+@media (max-width: 760px) {
+  .living-map-frame {
+    min-height: 760px;
+  }
+}

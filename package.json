@@ -12,8 +12,11 @@
     "seed:locations": "node scripts/seed-locations.js",
     "add": "node scripts/add-student.js",
     "bulk-add": "node scripts/bulk-add.js",
+    "check": "node scripts/verify.js",
+    "build:living-map": "npm install --prefix client && npm run build --prefix client",
     "server": "node src/server.js",
     "start": "node src/server.js",
+    "verify": "node scripts/verify.js",
     "view": "node scripts/view-students.js",
     "view-student": "node scripts/view-students.js",
     "cli": "node scripts/cli.js"
